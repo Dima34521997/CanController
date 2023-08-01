@@ -75,42 +75,68 @@ public class CANOpenDll
 
     #endregion
 
-    #region PDO import
+    #region PDO import // Перенесены все функции
 
     // PDO Objects
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "set_all_pdos_state", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short set_all_pdos_state(byte state);
 
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "get_pdo_node", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe short get_pdo_node(byte index, ref byte node);
+
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "put_pdo_node", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe Int16 put_pdo_node(byte index, byte node);
+
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_pdo_communication", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe Int16 read_pdo_communication(byte index, byte subind, ref UInt32 data);
+
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_pdo_communication", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe Int16 write_pdo_communication(byte index, byte subind, UInt32 data);
+
+
     // PDO Mapping
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_pdo_mapping", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short read_pdo_mapping(ushort canIndex, byte subind, ref uint data);
 
+
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_pdo_mapping", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short write_pdo_mapping(ushort canIndex, byte subind, uint data);
+
 
     // Master PDO
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "transmit_can_pdo", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short transmit_can_pdo(ushort index);
     #endregion
 
-    #region Log import
+    #region Log import // Перенесены все функции
 
     // Logger
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_logger_event", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short read_logger_event(ref EventLog ev);
     #endregion
 
-    #region OD import
+    #region OD import // Перенесены все функции
 
     // OD settings
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "add_node_object_dictionary", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short add_node_object_dictionary(byte node, ushort index, byte subind, ushort type);
 
+
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_node_object_dictionary", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short read_node_object_dictionary(byte node, ushort index, byte subind, byte upd, ref Numbers num);
 
+
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_node_object_dictionary", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short write_node_object_dictionary(byte node, ushort index, byte subind, ref Numbers num);
+
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "get_node_updated_object", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe short get_node_updated_object(ref byte node, ref UInt16 index, ref byte subind, ref Numbers num);
+
     #endregion
 
     #region SYNC import // Перенесены все функции
@@ -132,7 +158,8 @@ public class CANOpenDll
 
     #endregion
 
-    #region Init wrapper
+    #region Init wrapper // Все функции обёрнуты
+
     // Back Init
 
     public static short StartCANMaster(byte chan, byte baudRate)
@@ -152,7 +179,7 @@ public class CANOpenDll
 
     #endregion
 
-    #region NMT master with HBT wrapper // Все функции обёрнуты
+    #region NMT with HBT wrapper // Все функции обёрнуты
 
     // NMT Master with HBT
     public static short NMTMasterCommand(byte nmtStateCode, byte node)
@@ -203,18 +230,43 @@ public class CANOpenDll
 
     public static UInt32 GetSDOTimeout()
     {
-        get_sdo_timeout();
+        return get_sdo_timeout();
     }
 
     #endregion
 
-    #region PDO wrapper
+    #region PDO wrapper // Все функции обёрнуты
     //PDO Objects
     public static void SetAllPDOsState(byte state)
     {
         set_all_pdos_state(state);
     }
-    
+
+
+    public static Int16 GetPDONode(byte index, ref byte node)
+    {
+        return get_pdo_node(index, ref node);
+    }
+
+
+    public static Int16 PutPDONode(byte index, byte node)
+    {
+        return put_pdo_node(index, node);
+    }
+
+
+    public static Int16 ReadPDOCommunication(byte index, byte subind, ref UInt32 data)
+    {
+        return read_pdo_communication(index, subind, ref data);
+    }
+
+
+    public static Int16 WritePDOCommunication(byte index, byte subind, UInt32 data)
+    {
+        return write_pdo_communication(index, subind, data);
+    }
+
+
     // PDO Mapping
     public static short ReadPDOMapping(ushort canIndex, byte subind, ref uint data)
     {
@@ -234,11 +286,17 @@ public class CANOpenDll
 
     #endregion
 
+    #region Log wrapper // Все функции обёрнуты
+
     // Logging
     public static short ReadLoggerEvent(ref EventLog ev)
     {
         return read_logger_event(ref ev);
     }
+
+    #endregion
+
+    #region OD wrapper // Все функции обёрнуты
 
     // Object Dictionary
     public static short AddNodeObjectToDictionary(byte node, ushort index, byte subind, ushort type)
@@ -255,6 +313,14 @@ public class CANOpenDll
     {
         return write_node_object_dictionary(node, index, subind, ref num);
     }
+
+
+    public static short GetNodeUpdatedObject(ref byte node, ref ushort index, ref byte subind, ref Numbers num)
+    {
+        return get_node_updated_object(ref node, ref index, ref subind, ref num);
+    }
+
+    #endregion
 
     #region SYNC wrapper // Все функции обёрнуты
 
@@ -277,6 +343,10 @@ public class CANOpenDll
     }
 
     #endregion
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    #region Main funcs
 
     // Main Funcs
 
@@ -400,3 +470,4 @@ public class CANOpenDll
         public int info;
     }
 }
+#endregion
