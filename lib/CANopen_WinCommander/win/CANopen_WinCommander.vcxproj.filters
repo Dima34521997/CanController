@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6c6d6ac8-f3cf-45d0-83b3-2444b0250c0b}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{6883b4bf-8d2b-4245-9ed1-8021a06f6690}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Source Files\CANopenLib">
+      <UniqueIdentifier>{c4db3d00-dc76-48a8-927a-ad26a61c8728}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\confile">
+      <UniqueIdentifier>{0bbe77c0-07a5-400c-89be-5e2835647aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\application">
+      <UniqueIdentifier>{d3494da6-6859-4cc3-8a68-348b5bb98963}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\logger">
+      <UniqueIdentifier>{ff7cf1c2-ba00-4a7a-980f-3952d6c5e3a8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\include\master_typedefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_defunc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_genhead.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_header.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_structures.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\__application_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\config_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\__logger_defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\include\master_macros.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\__master_main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_backinit.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_cltrans.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_inout.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_obdsdo_client.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_lib.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_sdo_proc.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_client.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_obj_sync.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\can_master_system_winlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\confile\master_config_file.c">
+      <Filter>Source Files\confile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\confile\master_filename.c">
+      <Filter>Source Files\confile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\confile\master_pac.c">
+      <Filter>Source Files\confile</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_application.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_can_nodes.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_events.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_globals.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_pdo_process.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\logger\master_logfile.c">
+      <Filter>Source Files\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\logger\master_logger.c">
+      <Filter>Source Files\logger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_sdo_transfer.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\CANopen\master_canid.c">
+      <Filter>Source Files\CANopenLib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\application\master_nmt_commander.c">
+      <Filter>Source Files\application</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
