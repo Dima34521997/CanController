@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scenario_Editor", "Scenario
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAN Test", "_CAN Test\CAN Test.csproj", "{6F3A6CE7-5BFA-4CD1-8A30-C82D48C5935D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEST", "TEST\TEST.csproj", "{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TEST", "TEST\TEST.csproj", "{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject1", "TestProject1\TestProject1.csproj", "{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

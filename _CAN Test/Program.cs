@@ -70,29 +70,29 @@ void CHAI()
     CHAICanDLL.CanClose(1);
 }
 
-static int CANOpen()
-{
-    short fnr = CANOpenDll.StartCANMaster(1, (byte)Defines.CIA_BITRATE_INDEX_500);
-    if (fnr != (short)Defines.GEN_RETOK)
-    {
-        Console.WriteLine($"Master NOT started, error: {fnr}");
-        return (int)Defines.CAN_ERRET_MAIN;
-    }
+//static int CANOpen()
+//{
+//    short fnr = CANOpenDll.StartCANMaster(1, (byte)Defines.CIA_BITRATE_INDEX_500);
+//    if (fnr != (short)Defines.GEN_RETOK)
+//    {
+//        Console.WriteLine($"Master NOT started, error: {fnr}");
+//        return (int)Defines.CAN_ERRET_MAIN;
+//    }
 
-    CANOpenDll.ConfigureCANOpenSlave(2);
-    CANOpenDll.ReadDeviceObjects(2);
+//    CANOpenDll.ConfigureCANOpenSlave(2);
+//    CANOpenDll.ReadDeviceObjects(2);
 
-    CANOpenDll.ConfigureCANOpenSlave(127);
-    CANOpenDll.ReadDeviceObjects(127);
+//    CANOpenDll.ConfigureCANOpenSlave(127);
+//    CANOpenDll.ReadDeviceObjects(127);
 
-    Console.WriteLine(new string('-', 10 + 10 + 10 + 10 + 10 + 10 + 10 + 5));
-    Console.WriteLine("|{0,4}|{1,4}|{2,4}|{3,10}|{4,10}|{5,10}|{6,12}|",
-        "Node", "CLS", "Type", "Code", "Code(hex)", "Info", "Info(hex)");
-    Console.WriteLine(new string('-', 10 + 10 + 10 + 10 + 10 + 10 + 10 + 5));
+//    Console.WriteLine(new string('-', 10 + 10 + 10 + 10 + 10 + 10 + 10 + 5));
+//    Console.WriteLine("|{0,4}|{1,4}|{2,4}|{3,10}|{4,10}|{5,10}|{6,12}|",
+//        "Node", "CLS", "Type", "Code", "Code(hex)", "Info", "Info(hex)");
+//    Console.WriteLine(new string('-', 10 + 10 + 10 + 10 + 10 + 10 + 10 + 5));
 
-    for (int i = 0; i < 16; i++) CANOpenDll.Monitor();
-    if (CANOpenDll.StopCANMaster() != (int)Defines.CAN_RETOK) return (int)Defines.CAN_ERRET_MAIN;
-    return (int)Defines.CAN_RETURN_MAIN;
-}
+//    for (int i = 0; i < 16; i++) CANOpenDll.Monitor();
+//    if (CANOpenDll.StopCANMaster() != (int)Defines.CAN_RETOK) return (int)Defines.CAN_ERRET_MAIN;
+//    return (int)Defines.CAN_RETURN_MAIN;
+//}
 
-Console.WriteLine($"Program ended with {CANOpen()} code"); 
+//Console.WriteLine($"Program ended with {CANOpen()} code"); 

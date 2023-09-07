@@ -59,11 +59,11 @@ public class CANOpenDll
 
     // SDO
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_device_object_sdo", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short read_device_object_sdo(byte node, ushort canIndex, byte subind, ref byte data, ref uint datasize);
+    public static extern unsafe short read_device_object_sdo(byte node, ushort canIndex, byte subind, byte* data, ref uint datasize);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_device_object_sdo", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short write_device_object_sdo(byte node, ushort canIndex, byte subind, ref byte data, uint datasize);
+    public static extern unsafe short write_device_object_sdo(byte node, ushort canIndex, byte subind, byte* data, uint datasize);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "set_sdo_timeout", CallingConvention = CallingConvention.Cdecl)]
@@ -110,6 +110,14 @@ public class CANOpenDll
     // Master PDO
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "transmit_can_pdo", CallingConvention = CallingConvention.Cdecl)]
     private static extern unsafe short transmit_can_pdo(ushort index);
+
+
+    [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "receive_can_pdo", CallingConvention = CallingConvention.Cdecl)]
+    private static extern unsafe short receive_can_pdo(UInt16 index, ref canmsg_t cf);
+
+
+
+
     #endregion
 
     #region Log import // Перенесены все функции
@@ -200,7 +208,7 @@ public class CANOpenDll
     }
 
 
-    public static Int16 ReadMasterHBT(byte node,  ref UInt16 hbt) //D
+    public static Int16 ReadMasterHBT(byte node, ref UInt16 hbt) //D
     {
         return read_master_hbt(node, ref hbt);
     }
@@ -210,16 +218,16 @@ public class CANOpenDll
     #region SDO wrapper // Все функции обёрнуты
 
     // SDO
-    public static short ReadDeviceObjectSDO(byte node, ushort canIndex, byte subind, ref byte data, ref uint datasize)
-    {
-        return read_device_object_sdo(node, canIndex, subind, ref data, ref datasize);
-    }
+    //public static Int16 ReadDeviceObjectSDO(byte node, ushort canIndex, byte subind, byte * data, ref uint datasize)
+    //{
+    //    return read_device_object_sdo(node, canIndex, subind, ref  data, ref datasize);
+    //}
 
 
-    public static short WriteDeviceObjectSDO(byte node, ushort canIndex, byte subind, byte data, uint datasize)
-    {
-        return write_device_object_sdo(node, canIndex, subind, ref data, datasize);
-    }
+    //public static short WriteDeviceObjectSDO(byte node, ushort canIndex, byte subind, ref byte data, uint datasize)
+    //{
+    //    return write_device_object_sdo(node, canIndex, subind, ref data, datasize);
+    //}
 
 
     public static void SetSDOTimeout(UInt32 microseconds)
@@ -282,6 +290,12 @@ public class CANOpenDll
     public static short TransmitCANPDO(ushort index)
     {
         return transmit_can_pdo(index);
+    }
+
+
+    public static short ReceiveCANPDO(UInt16 index, ref canmsg_t cf)
+    {
+        return receive_can_pdo(index, ref cf);
     }
 
     #endregion
@@ -357,11 +371,11 @@ public class CANOpenDll
             Console.WriteLine("|{0,4}|{1,4}|{2,4}|{3,10}|{4,10:X}|{5,10}|{6,10:X}|",
                                ev.node, ev.cls, ev.type, ev.code, ((ushort)ev.code), ev.info, ((ushort)ev.info));
     }
-    
+
     public static void ConfigureCANOpenSlave(byte node)
     {
-        uint data;
-        ushort objDictInd;
+        UInt32 data;
+        UInt16 objDictInd;
 
         Console.WriteLine("\n");
 
@@ -376,10 +390,10 @@ public class CANOpenDll
         // Set master heartbeat
         fnr = WriteMasterHBT(node, 1200);
         Console.WriteLine($"Master heartbeat set. Status: {fnr}");
-        
+
         // Set slave heartbeat
         data = 1000;
-        fnr = WriteDeviceObjectSDO(node, 0x1017, 0, (byte) data, 2);
+        // fnr = WriteDeviceObjectSDO(node, 0x1017, 0, (byte) data, 2);
         Console.WriteLine($"Slave heartbeat set. Status: {fnr}");
 
         // Add node to OD
@@ -413,25 +427,25 @@ public class CANOpenDll
         Console.WriteLine($"Starting node {node}\n");
     }
 
-    public static void ReadDeviceObjects(byte node)
-    {
-        uint dataSize;
-        byte data;
-        string dch = new string('0', 100);
+    //public static void ReadDeviceObjects(byte node)
+    //{
+    //    uint dataSize;
+    //    byte data;
+    //    string dch = new string('0', 100);
 
-        data = 0;
-        dataSize = 2;
-        ReadDeviceObjectSDO(node, 0x1017, 0, ref data, ref dataSize);
-        Console.WriteLine($"Slave heartbeat: {data}");
+    //    data = 0;
+    //    dataSize = 2;
+    //    ReadDeviceObjectSDO(node, 0x1017, 0, ref data, ref dataSize);
+    //    Console.WriteLine($"Slave heartbeat: {data}");
 
-        dataSize = 100;
-        byte new_data = Convert.ToByte(dch);
-        ReadDeviceObjectSDO(node, 0x1008, 0, ref new_data, ref dataSize);
-        dch = dch.Remove(dch.Length - 1, 1) + "0";
+    //    dataSize = 100;
+    //    byte new_data = Convert.ToByte(dch);
+    //    ReadDeviceObjectSDO(node, 0x1008, 0, ref new_data, ref dataSize);
+    //    dch = dch.Remove(dch.Length - 1, 1) + "0";
 
-        Console.WriteLine($"Manufacturer Device Name: {new_data}");
-        Console.WriteLine($"Symbols read actually: {dataSize}");
-    }
+    //    Console.WriteLine($"Manufacturer Device Name: {new_data}");
+    //    Console.WriteLine($"Symbols read actually: {dataSize}");
+    //}
 
     public static void Monitor()
     {
@@ -446,17 +460,26 @@ public class CANOpenDll
     [StructLayout(LayoutKind.Explicit)]
     public struct Numbers
     {
-        [FieldOffset(0)] private ulong init;
-        [FieldOffset(8)] private byte i8;
-        [FieldOffset(9)] private byte uns8;
-        [FieldOffset(10)] private short i16;
-        [FieldOffset(12)] private ushort uns16;
-        [FieldOffset(14)] private int i32;
-        [FieldOffset(18)] private uint uns32;
-        [FieldOffset(22)] private long i64;
-        [FieldOffset(28)] private ulong uns64;
-        [FieldOffset(36)] private float re32;
-        [FieldOffset(40)] private double re64;
+        [FieldOffset(0)] public ulong init;
+        [FieldOffset(8)] public byte i8;
+        [FieldOffset(9)] public byte uns8;
+        [FieldOffset(10)] public short i16;
+        [FieldOffset(12)] public ushort uns16;
+        [FieldOffset(14)] public int i32;
+        [FieldOffset(18)] public uint uns32;
+        [FieldOffset(22)] public long i64;
+        [FieldOffset(28)] public ulong uns64;
+        [FieldOffset(36)] public float re32;
+        [FieldOffset(40)] public double re64;
+      
+
+    }
+
+    public enum Types
+    {
+        Typesbyte =0,
+        TypesInt = 1
+
     }
 
     public struct EventLog

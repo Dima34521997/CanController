@@ -22,7 +22,7 @@ Frame Format, идентификатор - 29 бит)
 
 #region CHAI
 
-internal struct canmsg_t
+public struct canmsg_t
 {
     public uint id;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
@@ -188,7 +188,7 @@ public enum Defines
     CAN_ERRET_EMCY_INVALID = -41, // Emergency is not valid
     CAN_ERRET_SYNC_NOTGENER = -40, // Device does not generate SYNC message
     CAN_ERRET_PDO_NOMAP = -32, // Object cannot be mapped to the PDO
-    CAN_ERRET_PDO_ERRMAP = -31, // The number and length of the objects to be mapped would exceed PDO length
+    CAN_ERRET_PDO_ERRMAP = -31, // Количество и длина отображаемых объектов превысит длину PDO.
     CAN_ERRET_PDO_MAP_DEACT = -30, // PDO mapping deactivated
     CAN_ERRET_PDO_TRTYPE = -24, // PDO transmittion type is invalid (requested operation is not supported)
     CAN_ERRET_PDO_NORTR = -23, // RTR is not allowed for the PDO
