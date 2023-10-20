@@ -1,7 +1,7 @@
 ﻿using Scenario_Editor.ViewModels;
 using System;
 
-namespace DevNetEmulator.Stores;
+namespace Scenario_Editor.Stores;
 
 public class NavigationStore
 {

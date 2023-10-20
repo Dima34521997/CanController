@@ -58,6 +58,17 @@ internal struct canerrs_t
     public ushort swovr;       // кол-во ошибок SOVR
     public ushort wtout;       // кол-во ошибок WTOUT
 }
+
+public struct chipstat_t
+{
+    public int type;
+    public int brdnum;
+    public int irq;
+    public ulong baddr;
+    public ulong hovr_cnt;
+    public ulong sovr_cnt;
+    //public string pad;
+}
 #endregion
 
 #region Codes

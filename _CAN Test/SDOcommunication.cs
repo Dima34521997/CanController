@@ -31,6 +31,7 @@ public static class SDOcommunication
             throw new Exception("Попытка прочесть пустой индекс");
 
         return data;
+
     }
 
 
@@ -78,74 +79,20 @@ public static class SDOcommunication
         UInt16 ArraySize = GetLengthOfArray(node, Index);
 
 
-        for (byte subIndex = 1; subIndex < ArraySize; subIndex++)
+        for (byte subIndex = 1; subIndex <= ArraySize; subIndex++)
         {
             WriteSDO(node, Index, (byte)(subIndex), data[subIndex - 1]);
             Thread.Sleep(1);
         }
     }
-
-
-
     #endregion
 
 
-    #region Чтение массива
-
-
-    //static public void ReadArraySDO(byte node, UInt16 Index, out byte[] Arr)
-    //{
-    //    UInt16 ArrayLength = GetLengthOfArray(node, Index);
-    //    Arr = new byte[ArrayLength];
-    //    byte data = 0;
-    //    if (ArrayLength == 0)
-    //    {
-    //        throw new Exception("Попытка прочесть несуществующую или пустую переменную");
-    //    }
-
-    //    for (byte index = 0; index < ArrayLength; index++)
-    //    {
-    //        SDO.ReadSDO(node, Index, (byte)(0x01 + index), out data);
-    //        Arr[index] = data;
-    //    }
-    //}
-
-    private static UInt16 GetLengthOfArray(byte node, UInt16 Index)
+    public static UInt16 GetLengthOfArray(byte node, UInt16 Index)
     {
         UInt16 Size = sizeof(byte);
         Size = ReadSDO(node, Index, 0x00, Size);
 
         return Size;
     }
-
-    #region Запись массива
-
-
-    //static public void WriteArraySDO(byte node, UInt16 Index, in byte[] Arr)
-    //{
-    //    UInt16 ArrayLength = GetLengthOfArray(node, Index);
-
-    //    if (ArrayLength == 0)
-    //    {
-    //        throw new Exception("Попытка записать в несуществующую переменную");
-    //    }
-
-    //    byte data = 0;
-
-    //    for (byte index = 0; index < ArrayLength; index++)
-    //    {
-    //        data = Arr[index];
-    //        WriteSDO(node, Index, (byte)(0x01 + index), in data);
-
-    //    }
-
-    //}
-
-    #endregion
-
-
-
-
-    #endregion
-
 }

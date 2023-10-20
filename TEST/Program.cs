@@ -1,49 +1,18 @@
 ﻿using CAN_Test;
+using System;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Schema;
 using static CAN_Test.CANOpenDll;
 
 namespace TEST
+
 {
     internal class Program
     {
-
-        static void PDOSettings(byte node)
+        public static void PrintArr<T>(UInt16 Index, T[] arr)
         {
-            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_START_REMOTE_NODE, node);
-            Console.WriteLine($"Starting node {node}\n");
-
-                
-            Int16 fnr = CANOpenDll.AddNodeObjectToDictionary(node, 0x6000, 1, (UInt16)Defines.CAN_DEFTYPE_INTEGER8);
-            UInt16 objDictInd = (UInt16)(Defines.CAN_INDEX_RCVPDO_MAP_MIN + (node - 1) * (int)Defines.CAN_NOF_PDO_TRAN_SLAVE);
-            Console.WriteLine($"Добавление объекта в OD. Status: {fnr}");
-
-
-            fnr = CANOpenDll.WritePDOMapping(objDictInd, 0, 0);
-            Console.WriteLine($"Master receive PDO mapping sub0 disable. Status: {fnr}");
-            //Запрещено PDO отображение, установлено значение 0 для нулевого субиндекса.При этом PDO будет переведено в недействительное состояние.
-
-
-            fnr = CANOpenDll.WritePDOMapping(objDictInd, 1, 0x60000108); // 0x60000108 - ДИЧЬ+
-            Console.WriteLine($"Master receive PDO mapping sub1, digital inputs. Status: {fnr}");
-            //Изменено PDO отображение, модифицированы соответствующие субиндексы.
-
-
-            fnr = CANOpenDll.WritePDOMapping(objDictInd, 0, 1);
-            Console.WriteLine($"Master receive PDO mapping sub0 enable. Status: {fnr}");
-            //
-
-            //fnr = CANOpenDll.RecieveCANPDO(0x6100, ref ) /// ????
-
-            
-
-        }
-
-
-
-        public static void PrintArr<T>(T[] arr)
-        {
+            Console.WriteLine($"Считанный массив данных по индексу 0x{Index:X}:");
             foreach(T b in arr) Console.Write($"{b} ");
             Console.WriteLine("\n");
         }
@@ -52,56 +21,119 @@ namespace TEST
 
 
 
+
+
+
+
+
         static void Main(string[] args)
         {
-
-            Stopwatch stopwatch = new Stopwatch();
+            //int errorCode = CANOpenDll.StartCANMaster(1, 4);
+            int errorCode = CANOpenDll.StartCANMaster(0, 4);
+            //Stopwatch stopwatch = new Stopwatch();
             //засекаем время начала операции
-            stopwatch.Start();
-            CANOpenDll.StartCANMaster(0, 0);
+            //stopwatch.Start();
 
-            ulong data = 0;
-            byte Node = 99;
-            UInt16 Index = 0x6100;
-            byte SubIndex = 7;
+            const uint mask = 0x0; const byte chan0 = 0x0;
+            const uint code = 0x0; const byte chan1 = 0x1;
 
-            //UInt16 ArrayLength = SDO.GetLengthOfArray(Node, Index);
-            //Console.WriteLine($"Длина массива = {ArrayLength}");
-          //  Console.WriteLine("");
+            //int errorCode = CHAICanDLL.CanInit();
 
-            byte[] arr = new byte[255];
+            //#region setup channels
+            //void ActivateChan0(int activateChan = 0)
+            //{
+            //    if (activateChan == 1)
+            //    {
+            //        errorCode = CHAICanDLL.CanOpen(chan0, 0x2);
+            //        Console.WriteLine("Канал 0:" + errorCode);
+
+            //        errorCode = CHAICanDLL.CanSetBaud(chan0, bt0: 0x03, bt1: 0x1c);
+            //        Console.WriteLine("Канал 0 Бод-Рейт:" + errorCode);
+
+            //        errorCode = CHAICanDLL.CanStart(0);
+            //        Console.WriteLine("Открытие канала 0:" + errorCode);
+            //    }
+            //}
 
 
+            //void ActivateChan1(int activateChan = 0)
+            //{
+            //    if (activateChan == 1)
+            //    {
+            //        errorCode = CHAICanDLL.CanOpen(chan1, 0x2);
+            //        Console.WriteLine("Канал 1:" + errorCode);
 
+            //        errorCode = CHAICanDLL.CanSetBaud(chan1, bt0: 0x03, bt1: 0x1c);
+            //        Console.WriteLine("Канал 1 Бод-Рейт:" + errorCode);
 
-            //Console.WriteLine("Read T data");
-            arr = SDOcommunication.ReadArraySDO(Node, Index, SubIndex, arr);
-          
+            //        errorCode = CHAICanDLL.CanStart(1);
+            //        Console.WriteLine("Открытие канала 1:" + errorCode);
+            //    }
+            //}
+            //#endregion
 
-            stopwatch.Stop();
-            //смотрим сколько миллисекунд было затрачено на выполнение
-            Console.WriteLine(stopwatch.ElapsedMilliseconds);
+            //ActivateChan0(1);
+            //ActivateChan1(1);
 
-            Console.WriteLine(new String('-', 35));
-             PrintArr(arr);
+            byte Node = 103;
+            UInt16 Index = 0x6666;
+            byte SubIndex = 0x04;
 
-            /*
-            SDO.WriteArraySDO(Node, Index, arr);
-            Console.Write($"Записанный массив: ");
-            PrintArr(arr);
+            UInt16 arrLen = SDOcommunication.GetLengthOfArray(Node, Index);
+            int[] data_Arr = new int[arrLen];
+            Int32 data = 8;
 
-            SDO.ReadArraySDO(Node, Index, out arr);
-            Console.Write("Считанный массив: ");
-            PrintArr(arr);
-            */
+            #region Тест функций CAN Open
 
-            //PrintArr(dataArr);
+            #region Тест чтения массива из OD
+            //SDOcommunication.ReadArraySDO(Node, Index, data_Arr);
+            //PrintArr(0x6666, data_Arr);
+            #endregion
 
-            //Console.WriteLine($"Размерность массива: {ArrayLength}");
+            #region Тест чтения элемента из OD
+            //data = SDOcommunication.ReadSDO(Node, Index, SubIndex, data);
+            //Console.WriteLine($"Считанный элемент: {data}");
+            #endregion
 
-            //Console.Write($"Считанное значение data = ");
-            //foreach (byte i in data) Console.Write($"{i} ");
-            //Console.WriteLine("\n");
+            #region Тест записи массива в OD
+            //SDOcommunication.WriteArraySDO(Node, Index, data_Arr);
+            //SDOcommunication.ReadArraySDO(103, Index, data_Arr);
+            //PrintArr(0x6666, data_Arr);
+            #endregion
+
+            #region Тест записи элемента в OD
+
+            //SDOcommunication.WriteSDO(Node, Index, SubIndex, data);
+            //SDOcommunication.ReadArraySDO(Node, Index, data_Arr);
+            //PrintArr(0x6666, data_Arr);
+            #endregion
+
+            #endregion
+
+            #region Тест CANOpen + CAN
+            //Write message
+            //canmsg_t canmsgW = new canmsg_t();
+            //canmsgW.id = 0x0126;
+            //canmsgW.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+            //                0x5, 0x6, 0x7, 0x8 };
+            //canmsgW.len = 8;
+            //errorCode = CHAICanDLL.CanWrite(0, canmsgW);
+            //Console.WriteLine("Отправка кадра: " + errorCode);
+
+            ////Read message
+            //canmsg_t canmsgRarr = new canmsg_t();
+            //errorCode = CHAICanDLL.CanRead(1, ref canmsgRarr);
+            //Console.WriteLine("Чтение: " + errorCode);
+            //foreach (byte t in canmsgRarr.data) Console.Write($"{t} ");
+
+            canmsg_t canmsgW = new canmsg_t();
+            canmsgW.id = 0x0126;
+            canmsgW.data = new byte[] { 0x1 };
+            canmsgW.len = 1;
+            errorCode = CHAICanDLL.CanWrite(0, canmsgW);
+            Console.WriteLine("Отправка кадра: " + errorCode);
+
+            #endregion
         }
     }
 }

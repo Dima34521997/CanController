@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -7,53 +8,98 @@ using System.Threading.Tasks;
 
 namespace CAN_Test;
 
-internal partial class CHAICanDLL
+public static class Constants
 {
-    [DllImport("chai.dll", EntryPoint = "CiOpen", CallingConvention = CallingConvention.Cdecl)] //
+    public const string IMPORT_FILE_NAME = "chai.dll";
+}
+
+public static class CHAICanDLL
+{
+    #region Imports
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiOpen", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiOpen(byte chan, byte flags);
 
-    [DllImport("chai.dll", EntryPoint = "CiInit", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiInit", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiInit();
 
-    [DllImport("chai.dll", EntryPoint = "CiStart", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiStart", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiStart(byte chan);
 
-    [DllImport("chai.dll", EntryPoint = "CiStop", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiStop", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiStop(byte chan);
 
-    [DllImport("chai.dll", EntryPoint = "CiSetFilter", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiSetFilter", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiSetFilter(byte chan, uint acode, uint amask);
 
-    [DllImport("chai.dll", EntryPoint = "CiSetBaud", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiSetBaud", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiSetBaud(byte chan, byte bt0, byte bt1);
 
-    [DllImport("chai.dll", EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiWrite(byte chan, canmsg_t mbuf, short cnt = 1);
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiWrite(byte chan, canmsg_t[] mbuf, short cnt = 1);
 
-    [DllImport("chai.dll", EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiRead(byte chan, ref canmsg_t mbuf, short cnt);
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiRead(byte chan, ref canmsg_t mbuf, short cnt=1);
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiRead(byte chan, ref canmsg_t[] mbuf, short cnt=1);
 
 
-    [DllImport("chai.dll", EntryPoint = "CiTrQueThreshold", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe ushort CiTrQueThreshold(byte chan, short getset, ref short thres);
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiTrQueThreshold", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe ushort CiTrQueThreshold(byte chan, short getset, ref ushort thres);
 
-    [DllImport("chai.dll", EntryPoint = "CiGetLibVer", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiGetLibVer", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe uint CiGetLibVer();
 
 
-    [DllImport("chai.dll", EntryPoint = "CiGetLibVer", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiGetLibVer", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiTransmit(byte chan, canmsg_t[] mbuf);
 
-    [DllImport("chai.dll", EntryPoint = "CiClose", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiClose", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiClose(byte chan);
 
-    [DllImport("chai.dll", EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe void msg_setrtr(canmsg_t mbuf);
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe void msg_setrtr(canmsg_t[] mbuf);
 
 
-    [DllImport("chai.dll", EntryPoint = "msg_isrtr", CallingConvention = CallingConvention.Cdecl)] //
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_isrtr", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short msg_isrtr(canmsg_t[] mbuf);
 
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWriteTout", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiWriteTout(byte chan, short getset, ref ushort msec);
+
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiChipStat", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiChipStat(byte chan, ref chipstat_t stat);
+
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRcQueThreshold", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiRcQueThreshold(byte chan, short getset, ref ushort thres);
+
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRcQueResize", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiRcQueResize(byte chan, ushort size);
+
+
+    [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiSetLom", CallingConvention = CallingConvention.Cdecl)] //
+    private static extern unsafe short CiSetLom(byte chan, byte mode);
+
+
+
+
+
+
+
+
+    #endregion
+
+
+    #region Wrappers
     public static short CanOpen(byte chan, byte flags)
     {
         return CiOpen(chan, flags);
@@ -85,17 +131,27 @@ internal partial class CHAICanDLL
         return CiSetBaud(chan, bt0, bt1);
     }
 
+    public static short CanWrite(byte chan, canmsg_t mbuf, short cnt = 1)
+    {
+        return CiWrite(chan, mbuf, cnt);
+    }
+
     public static short CanWrite(byte chan, canmsg_t[] mbuf, short cnt = 1)
     {
         return CiWrite(chan, mbuf, cnt);
     }
 
-    public static short CanRead(byte chan, canmsg_t[] mbuf, short cnt = 1)
+    public static short CanRead(byte chan, ref canmsg_t mbuf, short cnt = 1)
     {
-        return CiRead(chan, ref mbuf[0], cnt);
+        return CiRead(chan, ref mbuf, cnt);
     }
 
-    public static ushort TrQueThreshold(byte chan, short getset, ref short thres)
+    public static short CanRead(byte chan, ref canmsg_t[] mbuf, short cnt = 1)
+    {
+        return CiRead(chan, ref mbuf, cnt);
+    }
+
+    public static ushort CanTrQueThreshold(byte chan, short getset, ref ushort thres)
     {
         return CiTrQueThreshold(chan, getset, ref thres);
     }
@@ -103,6 +159,11 @@ internal partial class CHAICanDLL
     public static short CanTransmit(byte chan, canmsg_t[] mbuf)
     {
         return CiTransmit(chan, mbuf);
+    }
+
+    public static void setrtr_msg(canmsg_t mbuf)
+    {
+        msg_setrtr(mbuf);
     }
 
     public static void setrtr_msg(canmsg_t[] mbuf)
@@ -114,4 +175,30 @@ internal partial class CHAICanDLL
     {
         return msg_isrtr(mbuf);
     }
+
+    public static short CanWriteTimeOut(byte chan, short getset, ref ushort msec)
+    {
+        return CiWriteTout(chan, getset, ref msec);
+    }
+
+    public static short CanChipStat(byte chan, ref chipstat_t stat)
+    {
+        return CiChipStat(chan, ref stat);
+    }
+
+
+    public static short CanRcQueThreshold(byte chan, short getset, ref ushort thres)
+    { return CiRcQueThreshold(chan, getset, ref thres); }
+
+
+    public static short CanRcQueResize(byte chan, ushort size)
+    { return CiRcQueResize(chan, size); }
+
+
+    public static short CanSetLom(byte chan, byte mode)
+    {
+        return CiSetLom(chan, mode);
+    }
+
+    #endregion
 }

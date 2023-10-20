@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows;
 
-namespace DevNetEmulator.Helpers
+namespace Scenario_Editor.Helpers
 {
     public class AutoScroll
     {

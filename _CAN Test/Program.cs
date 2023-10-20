@@ -51,7 +51,7 @@ void CHAI()
 
     canmsg_t[] canmsgR = new canmsg_t[1];
 
-    errorCode = CHAICanDLL.CanRead(1, canmsgR, 1);
+    errorCode = CHAICanDLL.CanRead(1, ref canmsgR, 1);
     Console.WriteLine("Получение кадра: " + errorCode);
     Console.WriteLine("Содержание:");
     Console.WriteLine("Данные:");
