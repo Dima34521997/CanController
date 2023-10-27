@@ -91,9 +91,9 @@ namespace TEST
             #endregion
 
             #region Тест записи массива в OD
-            ApiCanController.WriteArray(Node, Index, dataArr, errorCode);
-            ApiCanController.ReadArray(Node, Index, out dataArrReaded, errorCode);
-            PrintArr(dataArrReaded, 0x6666);
+            //ApiCanController.WriteArray(Node, Index, dataArr, errorCode);
+            //ApiCanController.ReadArray(Node, Index, out dataArrReaded, errorCode);
+            //PrintArr(dataArrReaded, 0x6666);
             #endregion
 
             #region Тест записи элемента в OD
@@ -145,6 +145,12 @@ namespace TEST
 
             //errorCode = ApiCanController.FastRead(TestArrayR, errorCode);
             //foreach (byte elem in TestArrayR) { Console.Write($"{elem} "); }
+
+
+            // Тест HBT
+
+            data = ApiCanController.GetHBT(Node, data, errorCode);
+            Console.WriteLine($"HBT = {data}");
 
         }
     }

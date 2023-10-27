@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -106,6 +107,36 @@ namespace CAN_Test
 
             for (int i = 0; i < rd.data.Length; i++) { Data[i] = rd.data[i]; }
             return FRC;
+        }
+
+        public static T GetHBT<T>(byte Node, T Data, int FRC)
+        {
+            UInt32 DataSize = (UInt16)TypeSize<T>.Size;
+            unsafe
+            {
+                FRC = CANOpenDll.read_device_object_sdo(Node, 0x1017, 0x0000, (byte*)&Data, ref DataSize);
+            }
+            if (FRC != 0 && Data == null)
+                throw new Exception("Попытка прочесть пустой индекс");
+            return Data;
+        }
+
+
+        public static int ActivateCan(int FRC, int cond=0)
+        {
+            if (cond == 1)
+            {
+                FRC = CHAICanDLL.CanOpen(CanPort, 0x2);
+                FRC = CHAICanDLL.CanSetBaud(CanPort, bt0: 0x03, bt1: 0x1c);
+                FRC = CHAICanDLL.CanStart(CanPort);
+            }
+            return FRC;
+        }
+
+
+        public static void CanPortClose(byte CanPort)
+        {
+            CHAICanDLL.CanClose(CanPort);
         }
 
 
