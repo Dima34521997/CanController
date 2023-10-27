@@ -128,7 +128,7 @@ namespace TEST
 
             canmsg_t canmsgW = new canmsg_t();
             canmsgW.id = 0x0126;
-            canmsgW.data = new byte[] { 0x1 };
+            canmsgW.data = new byte[8]; //{ 0x1,02,03,04,05,06,07,08 };
             canmsgW.len = 1;
             errorCode = CHAICanDLL.CanWrite(0, canmsgW);
             Console.WriteLine("Отправка кадра: " + errorCode);
