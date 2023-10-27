@@ -36,7 +36,7 @@ void CHAI()
 
     // Write message
 
-    canmsg_t[] canmsgW = new canmsg_t[1];
+    canmsg[] canmsgW = new canmsg[1];
     canmsgW[0].id = 0x50;
     canmsgW[0].data = new byte[8] { 0x01, 0x02, 0x03, 0x04,
                             0x05, 0x06, 0x07, 0x08 };
@@ -49,7 +49,7 @@ void CHAI()
 
     // Read message
 
-    canmsg_t[] canmsgR = new canmsg_t[1];
+    canmsg[] canmsgR = new canmsg[1];
 
     errorCode = CHAICanDLL.CanRead(1, ref canmsgR, 1);
     Console.WriteLine("Получение кадра: " + errorCode);

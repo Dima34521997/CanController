@@ -16,4 +16,12 @@
     <Page Include="App.xaml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\EDN\Documents\Work\CAN_Network\Scenario_Editor\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\EDN\Documents\Work\CAN_Network\Scenario_Editor\.editorconfig" />
+  </ItemGroup>
+
 </Project>

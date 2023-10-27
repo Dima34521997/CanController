@@ -22,7 +22,7 @@ Frame Format, идентификатор - 29 бит)
 
 #region CHAI
 
-public struct canmsg_t
+public struct canmsg
 {
     public uint id;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]

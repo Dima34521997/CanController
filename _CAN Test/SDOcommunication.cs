@@ -12,11 +12,11 @@ using static CAN_Test.CANOpenDll;
 
 namespace CAN_Test;
 
-public static class SDOcommunication
+public static class SDOCommunication
 {
     #region Чтение
     
-    public static T ReadSDO<T>(byte node, UInt16 Index, byte SubIndex, T data) // чтение
+    public static T ReadSDO<T>(byte node, UInt16 Index, byte SubIndex, T data)
     {
         UInt32 DataSize = (UInt16)TypeSize<T>.Size;
         Int16 functionResultCode = 0;

@@ -113,7 +113,7 @@ public class CANOpenDll
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "receive_can_pdo", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short receive_can_pdo(UInt16 index, ref canmsg_t cf);
+    private static extern unsafe short receive_can_pdo(UInt16 index, ref canmsg cf);
 
 
 
@@ -293,7 +293,7 @@ public class CANOpenDll
     }
 
 
-    public static short ReceiveCANPDO(UInt16 index, ref canmsg_t cf)
+    public static short ReceiveCANPDO(UInt16 index, ref canmsg cf)
     {
         return receive_can_pdo(index, ref cf);
     }

@@ -35,16 +35,16 @@ public static class CHAICanDLL
     private static extern unsafe short CiSetBaud(byte chan, byte bt0, byte bt1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiWrite(byte chan, canmsg_t mbuf, short cnt = 1);
+    private static extern unsafe short CiWrite(byte chan, canmsg mbuf, short cnt = 1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiWrite(byte chan, canmsg_t[] mbuf, short cnt = 1);
+    private static extern unsafe short CiWrite(byte chan, canmsg[] mbuf, short cnt = 1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiRead(byte chan, ref canmsg_t mbuf, short cnt=1);
+    private static extern unsafe short CiRead(byte chan, ref canmsg mbuf, short cnt=1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiRead(byte chan, ref canmsg_t[] mbuf, short cnt=1);
+    private static extern unsafe short CiRead(byte chan, ref canmsg[] mbuf, short cnt=1);
 
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiTrQueThreshold", CallingConvention = CallingConvention.Cdecl)] //
@@ -55,20 +55,20 @@ public static class CHAICanDLL
 
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiGetLibVer", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiTransmit(byte chan, canmsg_t[] mbuf);
+    private static extern unsafe short CiTransmit(byte chan, canmsg[] mbuf);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiClose", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiClose(byte chan);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe void msg_setrtr(canmsg_t mbuf);
+    private static extern unsafe void msg_setrtr(canmsg mbuf);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe void msg_setrtr(canmsg_t[] mbuf);
+    private static extern unsafe void msg_setrtr(canmsg[] mbuf);
 
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_isrtr", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short msg_isrtr(canmsg_t[] mbuf);
+    private static extern unsafe short msg_isrtr(canmsg[] mbuf);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWriteTout", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiWriteTout(byte chan, short getset, ref ushort msec);
@@ -131,24 +131,24 @@ public static class CHAICanDLL
         return CiSetBaud(chan, bt0, bt1);
     }
 
-    public static short CanWrite(byte chan, canmsg_t mbuf, short cnt = 1)
+    public static short CanWrite(byte chan, canmsg mbuf, short cnt = 1)
     {
-        return CiWrite(chan, mbuf, cnt);
+        return CiWrite(chan, mbuf, 1);
     }
 
-    public static short CanWrite(byte chan, canmsg_t[] mbuf, short cnt = 1)
+    public static short CanWrite(byte chan, canmsg[] mbuf, short cnt = 1)
     {
-        return CiWrite(chan, mbuf, cnt);
+        return CiWrite(chan, mbuf, 1);
     }
 
-    public static short CanRead(byte chan, ref canmsg_t mbuf, short cnt = 1)
+    public static short CanRead(byte chan, ref canmsg mbuf, short cnt = 1)
     {
-        return CiRead(chan, ref mbuf, cnt);
+        return CiRead(chan, ref mbuf, 1);
     }
 
-    public static short CanRead(byte chan, ref canmsg_t[] mbuf, short cnt = 1)
+    public static short CanRead(byte chan, ref canmsg[] mbuf, short cnt = 1)
     {
-        return CiRead(chan, ref mbuf, cnt);
+        return CiRead(chan, ref mbuf, 1);
     }
 
     public static ushort CanTrQueThreshold(byte chan, short getset, ref ushort thres)
@@ -156,22 +156,22 @@ public static class CHAICanDLL
         return CiTrQueThreshold(chan, getset, ref thres);
     }
 
-    public static short CanTransmit(byte chan, canmsg_t[] mbuf)
+    public static short CanTransmit(byte chan, canmsg[] mbuf)
     {
         return CiTransmit(chan, mbuf);
     }
 
-    public static void setrtr_msg(canmsg_t mbuf)
+    public static void setrtr_msg(canmsg mbuf)
     {
         msg_setrtr(mbuf);
     }
 
-    public static void setrtr_msg(canmsg_t[] mbuf)
+    public static void setrtr_msg(canmsg[] mbuf)
     {
         msg_setrtr(mbuf);
     }
 
-    public static short isrtr_msg(canmsg_t[] mbuf)
+    public static short isrtr_msg(canmsg[] mbuf)
     {
         return msg_isrtr(mbuf);
     }
