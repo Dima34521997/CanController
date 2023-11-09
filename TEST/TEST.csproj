@@ -12,4 +12,10 @@
     <ProjectReference Include="..\CanLib\CanLib.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="canopen_dll_commander_x64.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

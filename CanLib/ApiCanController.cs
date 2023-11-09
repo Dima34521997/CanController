@@ -3,7 +3,7 @@
     public class ApiCanController : IApiCanController
     {
         static byte CanOpenPort = 0;
-        static byte CanPort = 1;
+        static byte CanPort = 0;
 
         public uint DeviceCanId;
 
@@ -145,7 +145,7 @@
             int FRC = 0;
             unsafe
             {
-                FRC = CANOpenDll.start_can_master(CanPort, 4);
+                FRC = CANOpenDll.start_can_master(CanOpenPort, 4);
             }
             return FRC;
         }
@@ -214,7 +214,7 @@
                 [7] = " не удаётся получить доступ к ресурсу",
                 [8] = " метод не реализован",
                 [9] = " ошибка ввода/вывода",
-                [10] = " устройство отсутствует",
+                [-10] = " устройство отсутствует",
                 [11] = " вызов был остановлен событием",
                 [12] = " нет ресурсов",
                 [13] = " произошло прерывание",

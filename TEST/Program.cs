@@ -38,26 +38,26 @@ namespace TEST
             int errorCode = 0;
 
             //errorCode = CHAICanDLL.CanInit();
-            //Console.WriteLine($"CHAI Init: {errorCode}");
+            Console.WriteLine($"CHAI Init: {errorCode}");
 
-            //void ActivateCanChannel(byte chanNumber, int cond=0)
-            //{
-            //    if (cond == 1)
-            //    {
-            //        Console.WriteLine("--------------------------------");
+            void ActivateCanChannel(byte chanNumber, int cond = 0)
+            {
+                if (cond == 1)
+                {
+                    Console.WriteLine("--------------------------------");
 
-            //        errorCode = CHAICanDLL.CanOpen(chanNumber, 0x2);
-            //        Console.WriteLine($"Канал {chanNumber}: " + errorCode);
+                    errorCode = CHAICanDLL.CanOpen(chanNumber, 0x2);
+                    Console.WriteLine($"Канал {chanNumber}: " + errorCode);
 
-            //        errorCode = CHAICanDLL.CanSetBaud(chanNumber, bt0: 0x03, bt1: 0x1c);
-            //        Console.WriteLine($"Канал {chanNumber} Бод-Рейт: " + errorCode);
+                    errorCode = CHAICanDLL.CanSetBaud(chanNumber, bt0: 0x03, bt1: 0x1c);
+                    Console.WriteLine($"Канал {chanNumber} Бод-Рейт: " + errorCode);
 
-            //        errorCode = CHAICanDLL.CanStart(chanNumber);
-            //        Console.WriteLine($"Открытие канала {chanNumber}: " + errorCode);
-            //    }
-            //}
+                    errorCode = CHAICanDLL.CanStart(chanNumber);
+                    Console.WriteLine($"Открытие канала {chanNumber}: " + errorCode);
+                }
+            }
 
-            
+
             //void ActivateCanOpenChannel(byte chanNumber, int cond = 0)
             //{
             //    if (cond == 1)
@@ -68,7 +68,7 @@ namespace TEST
             //    }
             //}
 
-            //ActivateCanOpenChannel(0, 1);
+            
 
             byte Node = 103;
             UInt16 Index = 0x6666;
@@ -171,16 +171,36 @@ namespace TEST
             //Console.WriteLine($"State {ApiCanController.GetDeviceState(Node)}");
 
             // Тест ReadDeviceInfo
-            Console.WriteLine("Активация CANopen:" + ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
+            //Console.WriteLine("Активация CANopen:" + ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
 
-            uint Data = 0;
-            errorCode = ApiCanController.ReadDeviceInfo(Node, ref Data);
-            errorCode = ApiCanController.Read(Node, 0x1018, 0x01, ref Data);
-            Console.WriteLine(Data);
+            //uint Data = 0;
+            //errorCode = ApiCanController.ReadDeviceInfo(Node, ref Data);
+            //errorCode = ApiCanController.Read(Node, 0x1018, 0x01, ref Data);
+            //Console.WriteLine(Data);
 
             // ТЕст FastRead
 
             //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.ActivateCan())); 
+
+            //int data = 3452;
+            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
+            //ApiCanController.Write(Node, Index, 0x01, data);
+            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.Write(Node, Index, 0x01, data)));
+
+            //Console.WriteLine(errorCode);
+
+
+            ApiCanController.ActivateCanOpen();
+
+            canmsg wr = new canmsg();
+            wr.id = 0x0126;
+            //wr.id = 0x0123;
+            wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                    0x5, 0x6, 0x7, 0x8 };
+            wr.len = 8;
+            errorCode = ApiCanController.FastWrite(wr.data, 0x0126);
+            Console.WriteLine(errorCode);
+            // фаст райт работает с активейт канопен
 
 
         }
