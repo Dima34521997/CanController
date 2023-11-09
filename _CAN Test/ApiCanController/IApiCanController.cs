@@ -79,7 +79,7 @@ namespace CAN_Test.ApiCanController
         /// <param name="Node">Номер узла</param>
         /// <param name="HBT"></param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int GetHBT<T>(byte Node, ref T HBT);
+        int GetHBT<T>(byte Node, ref ushort HBT);
 
 
         /// <summary>
@@ -141,10 +141,9 @@ namespace CAN_Test.ApiCanController
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="Node">Номер узла</param>
-        /// <param name="Data"></param>
-        /// <param name="FRC"></param>
+        /// <param name="Data">Переменная для хранения данных</param>
         /// <returns>Код-результат выполнения метода</returns>
-        string ReadDeviceInfo<T>(byte Node, ref T Data, int FRC);
+        int ReadDeviceInfo<T>(byte Node, ref T Data);
 
 
         /// <summary>

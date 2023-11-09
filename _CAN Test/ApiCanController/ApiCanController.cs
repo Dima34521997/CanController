@@ -119,7 +119,7 @@ namespace CAN_Test.ApiCanController
             return FRC;
         }
 
-        public int GetHBT<T>(byte Node, ref T HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
+        public int GetHBT<T>(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
 
 
         public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x000, HBT);
