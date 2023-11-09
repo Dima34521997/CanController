@@ -1,4 +1,5 @@
 ﻿using CAN_Test;
+using CAN_Test.ApiCanController;
 using System;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
@@ -29,6 +30,7 @@ namespace TEST
 
         static void Main(string[] args)
         {
+            ApiCanController ApiCanController = new ApiCanController();
             Console.WriteLine("Расшифровка состояний:\n" +
                 "  0 - успешное выполнение\n< 0 - код ошибки");
             Console.WriteLine("--------------------------------");
@@ -66,17 +68,18 @@ namespace TEST
                 }
             }
 
-            ActivateCanOpenChannel(0,1);
+            ActivateCanOpenChannel(0, 1);
 
             byte Node = 103;
             UInt16 Index = 0x6666;
             byte SubIndex = 0x04;
 
+            int[] TestArr = new int[] { 99, 98, 97, 96, 95, 94, 93, 92 };
+            int[] ReadedTestArr = new int[8];
+
 
             //UInt16 arrLen = ApiCanController.GetLengthOfArray(Node, Index);
-            int[] dataArr = new int[8] {9,8,7,6,5,4,3,2};
-            int[] dataArrReaded = new int[4];
-            int data = 112;
+
 
             #region Тест функций CAN Open
 
@@ -91,9 +94,12 @@ namespace TEST
             #endregion
 
             #region Тест записи массива в OD
-            //ApiCanController.WriteArray(Node, Index, dataArr, errorCode);
-            //ApiCanController.ReadArray(Node, Index, out dataArrReaded, errorCode);
-            //PrintArr(dataArrReaded, 0x6666);
+            
+            //Console.WriteLine($"Запись ErrorCode: {ApiCanController.WriteArray(Node, Index, TestArr)}");
+
+            //errorCode = ApiCanController.ReadArray(Node, Index, out ReadedTestArr);
+            //Console.WriteLine($"Чтение ErrorCode: {errorCode}");
+            //PrintArr(ReadedTestArr, 0x6666);
             #endregion
 
             #region Тест записи элемента в OD
@@ -148,10 +154,21 @@ namespace TEST
 
 
             // Тест HBT
+            //ushort HBT = 1111;
+            //int test = 0;
 
-            data = ApiCanController.GetHBT(Node, data, errorCode);
-            Console.WriteLine($"HBT = {data}");
+            //errorCode = ApiCanController.SetHBT(Node, HBT);
+            //Console.WriteLine($"FRC = {errorCode}");
+            //errorCode = ApiCanController.GetHBT(Node, ref test);
+            //Console.WriteLine($"HBT = {test} | FRC = {errorCode}");
 
+
+            // Тест States'ов
+
+            Console.WriteLine($"Установка состояния: " +
+                $"{ApiCanController.GetErrorInfo(ApiCanController.SetDeviceState(Node, 127))}");
+            //Thread.Sleep(10);
+            Console.WriteLine($"State {ApiCanController.GetDeviceState(Node)}");
         }
     }
 }

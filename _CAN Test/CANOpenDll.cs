@@ -21,11 +21,11 @@ public class CANOpenDll
 
     // Back Init
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "start_can_master", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short start_can_master(byte chan, byte baudRate);
+    public static extern unsafe short start_can_master(byte chan, byte baudRate);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "stop_can_master", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short stop_can_master();
+    public static extern unsafe short stop_can_master();
 
 
     // ???
@@ -39,16 +39,16 @@ public class CANOpenDll
 
     // NMT Master
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "nmt_master_command", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short nmt_master_command(byte nmtCstateCode, byte node);
+    public static extern unsafe short nmt_master_command(byte nmtCstateCode, byte node);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_nmt_state", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short read_nmt_state(byte node);
+    public static extern unsafe short read_nmt_state(byte node);
 
 
     //HBT Master
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_master_hbt", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short write_master_hbt(byte node, ushort hbt);
+    public static extern unsafe short write_master_hbt(byte node, ushort hbt);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_master_hbt", CallingConvention = CallingConvention.Cdecl)]

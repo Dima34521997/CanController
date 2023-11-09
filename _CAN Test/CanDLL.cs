@@ -17,22 +17,22 @@ public static class CHAICanDLL
 {
     #region Imports
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiOpen", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiOpen(byte chan, byte flags);
+    public static extern unsafe short CiOpen(byte chan, byte flags);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiInit", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiInit();
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiStart", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiStart(byte chan);
+    public static extern unsafe short CiStart(byte chan);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiStop", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiStop(byte chan);
+    public static extern unsafe short CiStop(byte chan);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiSetFilter", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiSetFilter(byte chan, uint acode, uint amask);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiSetBaud", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiSetBaud(byte chan, byte bt0, byte bt1);
+    public static extern unsafe short CiSetBaud(byte chan, byte bt0, byte bt1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiWrite", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe short CiWrite(byte chan, canmsg mbuf, short cnt = 1);
@@ -41,10 +41,10 @@ public static class CHAICanDLL
     private static extern unsafe short CiWrite(byte chan, canmsg[] mbuf, short cnt = 1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiRead(byte chan, ref canmsg mbuf, short cnt=1);
+    public static extern unsafe short CiRead(byte chan, ref canmsg mbuf, short cnt=1);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiRead", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiRead(byte chan, ref canmsg[] mbuf, short cnt=1);
+    public static extern unsafe short CiRead(byte chan, ref canmsg[] mbuf, short cnt=1);
 
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiTrQueThreshold", CallingConvention = CallingConvention.Cdecl)] //
@@ -58,7 +58,7 @@ public static class CHAICanDLL
     private static extern unsafe short CiTransmit(byte chan, canmsg[] mbuf);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "CiClose", CallingConvention = CallingConvention.Cdecl)] //
-    private static extern unsafe short CiClose(byte chan);
+    public static extern unsafe short CiClose(byte chan);
 
     [DllImport(Constants.IMPORT_FILE_NAME, EntryPoint = "msg_setrtr", CallingConvention = CallingConvention.Cdecl)] //
     private static extern unsafe void msg_setrtr(canmsg mbuf);
