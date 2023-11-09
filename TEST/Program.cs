@@ -40,35 +40,35 @@ namespace TEST
             //errorCode = CHAICanDLL.CanInit();
             //Console.WriteLine($"CHAI Init: {errorCode}");
 
-            void ActivateCanChannel(byte chanNumber, int cond=0)
-            {
-                if (cond == 1)
-                {
-                    Console.WriteLine("--------------------------------");
+            //void ActivateCanChannel(byte chanNumber, int cond=0)
+            //{
+            //    if (cond == 1)
+            //    {
+            //        Console.WriteLine("--------------------------------");
 
-                    errorCode = CHAICanDLL.CanOpen(chanNumber, 0x2);
-                    Console.WriteLine($"Канал {chanNumber}: " + errorCode);
+            //        errorCode = CHAICanDLL.CanOpen(chanNumber, 0x2);
+            //        Console.WriteLine($"Канал {chanNumber}: " + errorCode);
 
-                    errorCode = CHAICanDLL.CanSetBaud(chanNumber, bt0: 0x03, bt1: 0x1c);
-                    Console.WriteLine($"Канал {chanNumber} Бод-Рейт: " + errorCode);
+            //        errorCode = CHAICanDLL.CanSetBaud(chanNumber, bt0: 0x03, bt1: 0x1c);
+            //        Console.WriteLine($"Канал {chanNumber} Бод-Рейт: " + errorCode);
 
-                    errorCode = CHAICanDLL.CanStart(chanNumber);
-                    Console.WriteLine($"Открытие канала {chanNumber}: " + errorCode);
-                }
-            }
+            //        errorCode = CHAICanDLL.CanStart(chanNumber);
+            //        Console.WriteLine($"Открытие канала {chanNumber}: " + errorCode);
+            //    }
+            //}
 
             
-            void ActivateCanOpenChannel(byte chanNumber, int cond = 0)
-            {
-                if (cond == 1)
-                {
-                    errorCode = CANOpenDll.StartCANMaster(chanNumber, 4);
-                    Thread.Sleep(10);
-                    Console.WriteLine($"Состояние запуска канала {chanNumber} (CanOpen): {errorCode}");
-                }
-            }
+            //void ActivateCanOpenChannel(byte chanNumber, int cond = 0)
+            //{
+            //    if (cond == 1)
+            //    {
+            //        errorCode = CANOpenDll.StartCANMaster(chanNumber, 4);
+            //        Thread.Sleep(10);
+            //        Console.WriteLine($"Состояние запуска канала {chanNumber} (CanOpen): {errorCode}");
+            //    }
+            //}
 
-            ActivateCanOpenChannel(0, 1);
+            //ActivateCanOpenChannel(0, 1);
 
             byte Node = 103;
             UInt16 Index = 0x6666;
@@ -94,7 +94,7 @@ namespace TEST
             #endregion
 
             #region Тест записи массива в OD
-            
+
             //Console.WriteLine($"Запись ErrorCode: {ApiCanController.WriteArray(Node, Index, TestArr)}");
 
             //errorCode = ApiCanController.ReadArray(Node, Index, out ReadedTestArr);
@@ -140,8 +140,8 @@ namespace TEST
 
             // Первый параметр - номер канала, второй - "кнопка" активации
             // По умолчанию второй параметр имеет значение 0 (канал выкл.), 1 - активировать канал
-            ActivateCanChannel(0);
-            ActivateCanChannel(1, 1);
+            //ActivateCanChannel(0);
+            //ActivateCanChannel(1, 1);
 
 
             //byte[] TestArrayW = new byte[8] { 3, 4, 5, 2, 3, 4, 5, 2 };
@@ -165,10 +165,24 @@ namespace TEST
 
             // Тест States'ов
 
-            Console.WriteLine($"Установка состояния: " +
-                $"{ApiCanController.GetErrorInfo(ApiCanController.SetDeviceState(Node, 127))}");
-            //Thread.Sleep(10);
-            Console.WriteLine($"State {ApiCanController.GetDeviceState(Node)}");
+            //Console.WriteLine($"Установка состояния: " +
+            //    $"{ApiCanController.GetErrorInfo(ApiCanController.SetDeviceState(Node, 127))}");
+            ////Thread.Sleep(10);
+            //Console.WriteLine($"State {ApiCanController.GetDeviceState(Node)}");
+
+            // Тест ReadDeviceInfo
+            Console.WriteLine("Активация CANopen:" + ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
+
+            uint Data = 0;
+            errorCode = ApiCanController.ReadDeviceInfo(Node, ref Data);
+            errorCode = ApiCanController.Read(Node, 0x1018, 0x01, ref Data);
+            Console.WriteLine(Data);
+
+            // ТЕст FastRead
+
+            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.ActivateCan())); 
+
+
         }
     }
 }
