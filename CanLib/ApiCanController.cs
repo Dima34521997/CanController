@@ -92,7 +92,7 @@ namespace CAN_Test.ApiCanController
             canmsg wr = new canmsg();
             wr.id = ID;
             wr.data = Data;
-            wr.len = (byte)Data.Length;
+            wr.len = 8;
             FRC = CHAICanDLL.CanWrite(CanPort, wr);
             Thread.Sleep(10);
             return FRC;
@@ -112,7 +112,7 @@ namespace CAN_Test.ApiCanController
             return FRC;
         }
 
-        public int GetHBT<T>(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
+        public int GetHBT(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
 
 
         public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x000, HBT);

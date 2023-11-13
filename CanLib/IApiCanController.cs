@@ -79,7 +79,7 @@ namespace CAN_Test.ApiCanController
         /// <param name="Node">Номер узла</param>
         /// <param name="HBT"></param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int GetHBT<T>(byte Node, ref ushort HBT);
+        int GetHBT(byte Node, ref ushort HBT);
 
 
         /// <summary>

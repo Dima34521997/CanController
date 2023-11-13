@@ -54,8 +54,8 @@ namespace TEST
             ApiCanController.ActivateCanOpen();
 
             byte Node = 103;
-            UInt16 Index = 0x6000;
-            byte SubIndex = 1;
+            UInt16 Index = 0x6666;
+            byte SubIndex = 0;
 
             int[] TestArr = new int[] { 99, 98, 97, 96, 95, 94, 93, 92 };
             int[] ReadedTestArr = new int[8];
@@ -89,9 +89,9 @@ namespace TEST
 
             #region Тест записи элемента в OD
 
-            //ApiCanController.Write(Node, Index, SubIndex, data);
-            //ApiCanController.ReadArray(Node, Index, dataArrReaded);
-            //PrintArr(0x6666, dataArrReaded);
+            ApiCanController.Write(Node, 0x1017, SubIndex, (ushort)228);
+            
+
             #endregion
 
             #endregion
@@ -140,10 +140,11 @@ namespace TEST
 
             // Тест HBT
             //ushort HBT = 1111;
-            //int test = 0;
+            //ushort test = 0;
 
-            //errorCode = ApiCanController.SetHBT(Node, HBT);
+            //errorCode = ApiCanController.SetHBT(Node, 5000);
             //Console.WriteLine($"FRC = {errorCode}");
+
             //errorCode = ApiCanController.GetHBT(Node, ref test);
             //Console.WriteLine($"HBT = {test} | FRC = {errorCode}");
 
@@ -192,14 +193,16 @@ namespace TEST
             //                        0x5, 0x6, 0x7, 0x8 };
             //wr.len = 8;
 
-            int pdo = 13;
-            byte Upd = 0;
-            
-            errorCode = ApiCanController.ReadPDO(Node, Index, SubIndex, ref Upd, ref pdo);
-            Console.WriteLine("Статус выполнения:" + ApiCanController.GetErrorInfo(errorCode));
+            //int pdo = 13;
+            //byte Upd = 0;
 
-            Console.WriteLine("Данные: " + pdo);
-            Console.WriteLine("UPD = " + Upd);
+            //errorCode = ApiCanController.ReadPDO(Node, Index, SubIndex, ref Upd, ref pdo);
+            //Console.WriteLine("Статус выполнения:" + ApiCanController.GetErrorInfo(errorCode));
+
+            //Console.WriteLine("Данные: " + pdo);
+            //Console.WriteLine("UPD = " + Upd);
+
+
 
         }
     }
