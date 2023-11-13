@@ -37,25 +37,8 @@ namespace TEST
 
             int errorCode = 0;
 
-            //errorCode = CHAICanDLL.CanInit();
-            Console.WriteLine($"CHAI Init: {errorCode}");
 
-            void ActivateCanChannel(byte chanNumber, int cond = 0)
-            {
-                if (cond == 1)
-                {
-                    Console.WriteLine("--------------------------------");
 
-                    errorCode = CHAICanDLL.CanOpen(chanNumber, 0x2);
-                    Console.WriteLine($"Канал {chanNumber}: " + errorCode);
-
-                    errorCode = CHAICanDLL.CanSetBaud(chanNumber, bt0: 0x03, bt1: 0x1c);
-                    Console.WriteLine($"Канал {chanNumber} Бод-Рейт: " + errorCode);
-
-                    errorCode = CHAICanDLL.CanStart(chanNumber);
-                    Console.WriteLine($"Открытие канала {chanNumber}: " + errorCode);
-                }
-            }
 
 
             //void ActivateCanOpenChannel(byte chanNumber, int cond = 0)
@@ -68,29 +51,31 @@ namespace TEST
             //    }
             //}
 
-            
+            ApiCanController.ActivateCanOpen();
 
             byte Node = 103;
-            UInt16 Index = 0x6666;
-            byte SubIndex = 0x04;
+            UInt16 Index = 0x6000;
+            byte SubIndex = 1;
 
             int[] TestArr = new int[] { 99, 98, 97, 96, 95, 94, 93, 92 };
             int[] ReadedTestArr = new int[8];
+            int data = 0;
 
 
-            //UInt16 arrLen = ApiCanController.GetLengthOfArray(Node, Index);
+
 
 
             #region Тест функций CAN Open
 
             #region Тест чтения массива из OD
-            //ApiCanController.ReadArray(Node, Index, out dataArr, errorCode);
-            //PrintArr(dataArr, Index);
+            //int FRC = ApiCanController.ReadArray(Node, Index, out TestArr);
+            //Console.WriteLine(ApiCanController.GetErrorInfo(FRC));
+            //PrintArr(TestArr, Index);
             #endregion
 
             #region Тест чтения элемента из OD
-            //data = ApiCanController.Read(Node, Index, SubIndex, data);
-            //Console.WriteLine($"Считанный элемент: {data}");
+            //int FRC = ApiCanController.Read(Node, Index, SubIndex, ref data);
+            //Console.WriteLine(data);
             #endregion
 
             #region Тест записи массива в OD
@@ -190,18 +175,31 @@ namespace TEST
             //Console.WriteLine(errorCode);
 
 
-            ApiCanController.ActivateCanOpen();
 
-            canmsg wr = new canmsg();
-            wr.id = 0x0126;
-            //wr.id = 0x0123;
-            wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-                                    0x5, 0x6, 0x7, 0x8 };
-            wr.len = 8;
-            errorCode = ApiCanController.FastWrite(wr.data, 0x0126);
-            Console.WriteLine(errorCode);
-            // фаст райт работает с активейт канопен
 
+            //canmsg wr = new canmsg();
+            //wr.id = 0x0126;
+            ////wr.id = 0x0123;
+            //wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+            //                        0x5, 0x6, 0x7, 0x8 };
+            //wr.len = 8;
+
+
+            //canmsg rd = new canmsg();
+
+            //rd.id = 0x0123;
+            //wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+            //                        0x5, 0x6, 0x7, 0x8 };
+            //wr.len = 8;
+
+            int pdo = 13;
+            byte Upd = 0;
+            
+            errorCode = ApiCanController.ReadPDO(Node, Index, SubIndex, ref Upd, ref pdo);
+            Console.WriteLine("Статус выполнения:" + ApiCanController.GetErrorInfo(errorCode));
+
+            Console.WriteLine("Данные: " + pdo);
+            Console.WriteLine("UPD = " + Upd);
 
         }
     }

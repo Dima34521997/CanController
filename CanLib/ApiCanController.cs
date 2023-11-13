@@ -1,4 +1,6 @@
-﻿namespace CAN_Test.ApiCanController
+﻿using System.Xml.Linq;
+
+namespace CAN_Test.ApiCanController
 {
     public class ApiCanController : IApiCanController
     {
@@ -6,7 +8,6 @@
         static byte CanPort = 0;
 
         public uint DeviceCanId;
-
 
         public int Write<T>(byte Node, ushort Index, byte SubIndex, T Data)
         {
@@ -116,29 +117,6 @@
 
         public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x000, HBT);
 
-        public int ActivateCan()
-        {
-            int FRC = 0;
-            unsafe
-            {
-                CHAICanDLL.CiOpen(CanPort, 0x2);
-                CHAICanDLL.CiSetBaud(CanPort, bt0: 0x03, bt1: 0x1c);
-                FRC = CHAICanDLL.CiStart(CanPort);
-            }
-            return FRC;
-        }
-
-
-        public int DisactivateCan()
-        {
-            int FRC = 0;
-            unsafe
-            {
-                FRC = CHAICanDLL.CiClose(CanPort);
-            }
-            return FRC;
-        }
-
 
         public int ActivateCanOpen()
         {
@@ -159,6 +137,23 @@
                 FRC = CANOpenDll.stop_can_master();
             }
             return FRC;
+        }
+
+
+        public string GetDeviceStateInfo(byte Node)
+        {
+            var StateDict = new Dictionary<int, string>()
+            {
+                [127] = " предоперационное",
+                [0] = " CANopen устройство активировано(boot-up протокол).",
+                [5] = " операционное состояние узла.",
+                [4] = " cостояние останова CAN узла.",
+                [254] = " нет данных о NMT состоянии CAN узла.",
+                [255] = " неопределенное состояние CAN узла (произошло событие сердцебиения).",
+            };
+
+
+            return StateDict[CANOpenDll.read_nmt_state(Node)];
         }
 
 
@@ -195,9 +190,36 @@
             Data = Convert.ToUInt32(Console.ReadLine());
             FRC = Write(Node, 0x1018, 0x01, Data);
 
-
             return FRC;
         }
+
+
+        public int ReadPDO(byte Node, ushort Index, byte SubIndex, ref byte Upd, ref int Data)
+        {
+            int FRC = CANOpenDll.AddNodeObjectToDictionary(Node, Index, SubIndex, (ushort)Defines.CAN_DEFTYPE_UNSIGNED8);
+            ushort objDictInd = (ushort)(Defines.CAN_INDEX_RCVPDO_MAP_MIN + (Node - 1) * (int)Defines.CAN_NOF_PDO_TRAN_SLAVE);
+
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_ENTER_PRE_OPERATIONAL, Node);
+            Thread.Sleep(50);
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_RESET_NODE, Node);
+            CANOpenDll.SetAllPDOsState((byte)Defines.NOT_VALID);
+            CANOpenDll.WritePDOMapping(objDictInd, 0, 0);          
+            CANOpenDll.WritePDOMapping(objDictInd, 1, 0x60000108);
+            CANOpenDll.WritePDOMapping(objDictInd, 0, 1);
+
+            CANOpenDll.SetAllPDOsState((byte) Defines.VALID);
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_START_REMOTE_NODE, Node);
+ 
+            Thread.Sleep(20);
+
+            FRC = CANOpenDll.ReadNodeObjectToDictionary(Node, Index, SubIndex, ref Upd, ref Data);
+            Console.WriteLine(FRC);
+            Thread.Sleep(10);
+
+            return FRC;
+
+        }
+
 
 
         public string GetErrorInfo(int FRC)
@@ -206,20 +228,20 @@
             {
                 [0] = " успешное выполнение",
                 [1] = "???",
-                [2] = " устройство или ресурс заняты",
-                [3] = " ошибка памяти",
-                [4] = " метод не может быть использован из текущего состояния контроллера",
-                [5] = " ошибка вызова, метод не может быть вызван для этого объекта",
-                [6] = " переданы некорректные параметры",
-                [7] = " не удаётся получить доступ к ресурсу",
-                [8] = " метод не реализован",
-                [9] = " ошибка ввода/вывода",
+                [-2] = " устройство или ресурс заняты",
+                [-3] = " ошибка памяти",
+                [-4] = " метод не может быть использован из текущего состояния контроллера",
+                [-5] = " ошибка вызова, метод не может быть вызван для этого объекта",
+                [-6] = " переданы некорректные параметры",
+                [-7] = " не удаётся получить доступ к ресурсу",
+                [-8] = " метод не реализован",
+                [-9] = " ошибка ввода/вывода",
                 [-10] = " устройство отсутствует",
-                [11] = " вызов был остановлен событием",
-                [12] = " нет ресурсов",
-                [13] = " произошло прерывание",
-
-
+                [-11] = " вызов был остановлен событием",
+                [-12] = " нет ресурсов",
+                [-13] = " произошло прерывание",
+                [-102] = " объект не существует в ОС",
+                [-103] = " ошибка записи в объектный словарь",
             };
             return CodesDict[FRC];
         }

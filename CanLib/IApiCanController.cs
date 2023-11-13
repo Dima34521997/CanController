@@ -106,24 +106,18 @@ namespace CAN_Test.ApiCanController
 
 
         /// <summary>
-        /// Активирует Can.
+        /// Выводит информацию о текущем состоянии узла в текстовом виде.
         /// </summary>
-        /// <returns>Код-результат выполнения метода</returns>
-        int ActivateCan();
-
-
-        /// <summary>
-        /// Завершает работу Can.
-        /// </summary>
-        /// <returns>Код-результат выполнения метода</returns>
-        int DisactivateCan();
+        /// <param name="Node">Номер узла</param>
+        /// <returns>Текстовое описание состояния узла</returns>
+        string GetDeviceStateInfo(byte Node);
 
 
         /// <summary>
         /// Выводит информацию о текущем состоянии узла.
         /// </summary>
         /// <param name="Node">Номер узла</param>
-        /// <returns>Код-результат выполнения метода</returns>
+        /// <returns>Числовой код состояния узла</returns>
         int GetDeviceState(byte Node);
 
 
@@ -153,6 +147,18 @@ namespace CAN_Test.ApiCanController
         /// <param name="Node">Номер узла</param>
         /// <returns>Код-результат выполнения метода</returns>
         int ChangeDeviceInfo<T>(byte Node);
+
+
+        /// <summary>
+        /// Считывает PDO.
+        /// </summary>
+        /// <param name="Node">Номер узла</param>
+        /// <param name="Index">Индекс</param>
+        /// <param name="SubIndex">Субиндекс</param>
+        /// <param name="Upd">Флаг обновления данных PDO</param>
+        /// <param name="Data">Данные PDO</param>
+        /// <returns>Код-результат выполнения</returns>
+        int ReadPDO(byte Node, ushort Index, byte SubIndex, ref byte Upd, ref int Data);
 
 
         /// <summary>

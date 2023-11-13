@@ -135,7 +135,7 @@ public class CANOpenDll
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "read_node_object_dictionary", CallingConvention = CallingConvention.Cdecl)]
-    private static extern unsafe short read_node_object_dictionary(byte node, ushort index, byte subind, byte upd, ref Numbers num);
+    private static extern unsafe short read_node_object_dictionary(byte node, ushort index, byte subind, ref byte upd, ref int num);
 
 
     [DllImport("canopen_dll_commander_x64.dll", EntryPoint = "write_node_object_dictionary", CallingConvention = CallingConvention.Cdecl)]
@@ -224,9 +224,9 @@ public class CANOpenDll
     //}
 
 
-    //public static short WriteDeviceObjectSDO(byte node, ushort canIndex, byte subind, ref byte data, uint datasize)
+    //public static short writedeviceobjectsdo(byte node, ushort canindex, byte subind, ref byte data, uint datasize)
     //{
-    //    return write_device_object_sdo(node, canIndex, subind, ref data, datasize);
+    //    return write_device_object_sdo(node, canindex, subind, ref data, datasize);
     //}
 
 
@@ -318,21 +318,21 @@ public class CANOpenDll
         return add_node_object_dictionary(node, index, subind, type);
     }
 
-    public static short ReadNodeObjectToDictionary(byte node, ushort index, byte subind, byte upd, ref Numbers num)
+    public static short ReadNodeObjectToDictionary(byte node, ushort index, byte subind, ref byte upd, ref int num)
     {
-        return read_node_object_dictionary(node, index, subind, upd, ref num);
+        return read_node_object_dictionary(node, index, subind, ref upd, ref num);
     }
 
-    public static short WriteNodeObjectDictionary(byte node, ushort index, byte subind, ref Numbers num)
-    {
-        return write_node_object_dictionary(node, index, subind, ref num);
-    }
+    //public static short WriteNodeObjectDictionary(byte node, ushort index, byte subind, ref Numbers num)
+    //{
+    //    return write_node_object_dictionary(node, index, subind, ref num);
+    //}
 
 
-    public static short GetNodeUpdatedObject(ref byte node, ref ushort index, ref byte subind, ref Numbers num)
-    {
-        return get_node_updated_object(ref node, ref index, ref subind, ref num);
-    }
+    //public static short GetNodeUpdatedObject(ref byte node, ref ushort index, ref byte subind, ref Numbers num)
+    //{
+    //    return get_node_updated_object(ref node, ref index, ref subind, ref num);
+    //}
 
     #endregion
 
