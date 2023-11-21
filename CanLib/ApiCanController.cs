@@ -140,7 +140,7 @@ namespace CAN_Test.ApiCanController
         }
 
 
-        public string GetDeviceStateInfo(byte Node)
+        public string GetDeviceStateInfo(byte StateNode)
         {
             var StateDict = new Dictionary<int, string>()
             {
@@ -153,7 +153,7 @@ namespace CAN_Test.ApiCanController
             };
 
 
-            return StateDict[CANOpenDll.read_nmt_state(Node)];
+            return StateDict[StateNode];
         }
 
 

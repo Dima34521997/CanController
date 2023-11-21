@@ -11,6 +11,17 @@ namespace TEST
 {
     internal class Program
     {
+        static public (byte LSB, byte MSB) SplitBytes(UInt16 value)
+        {
+
+            
+
+            byte LSB = (byte)value;
+            byte MSB = (byte)(value >> 8);
+
+            var result = (LSB: LSB, MSB: MSB);
+            return result;
+        }
         public static void PrintArr<T>(T[] arr, UInt16 Index=0)
         {
             if (Index != 0)
@@ -30,7 +41,7 @@ namespace TEST
 
         static void Main(string[] args)
         {
-            ApiCanController ApiCanController = new ApiCanController();
+            ApiCanController ACC = new ApiCanController();
             Console.WriteLine("Расшифровка состояний:\n" +
                 "  0 - успешное выполнение\n< 0 - код ошибки");
             Console.WriteLine("--------------------------------");
@@ -51,11 +62,11 @@ namespace TEST
             //    }
             //}
 
-            ApiCanController.ActivateCanOpen();
+            ACC.ActivateCanOpen();
 
-            byte Node = 103;
-            UInt16 Index = 0x6666;
-            byte SubIndex = 0;
+            //byte Node = 103;
+            //UInt16 Index = 0x6666;
+            //byte SubIndex = 0;
 
             int[] TestArr = new int[] { 99, 98, 97, 96, 95, 94, 93, 92 };
             int[] ReadedTestArr = new int[8];
@@ -89,8 +100,8 @@ namespace TEST
 
             #region Тест записи элемента в OD
 
-            ApiCanController.Write(Node, 0x1017, SubIndex, (ushort)228);
-            
+            // ApiCanController.Write(Node, 0x1017, SubIndex, (ushort)228);
+
 
             #endregion
 
@@ -123,6 +134,7 @@ namespace TEST
 
             #endregion
 
+            #region MyRegion
             // Первый параметр - номер канала, второй - "кнопка" активации
             // По умолчанию второй параметр имеет значение 0 (канал выкл.), 1 - активировать канал
             //ActivateCanChannel(0);
@@ -177,14 +189,124 @@ namespace TEST
 
 
 
+            #endregion
+            Console.WriteLine(
+                "0 - Тест CAN(write);\n" +
+                "1 - Установить HBT в 3000 ()\n" +
+                "2 - Cчитать HBT и вывести через CAN (write)\n" +
+                "3 - Тест записи/чтения в ОС\n" +
+                "4 - Тест записи/чтения массива в ОС\n" +
+                "5 - Тест чтения/изменения состояний узла");
 
-            //canmsg wr = new canmsg();
-            //wr.id = 0x0126;
-            ////wr.id = 0x0123;
-            //wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-            //                        0x5, 0x6, 0x7, 0x8 };
-            //wr.len = 8;
+            while (true)
+            {
+              int? key =  int.Parse(Console.ReadLine());
+               if(key ==0)
+                {
+                    #region Test CAN
 
+
+                    canmsg wr = new canmsg();
+                    wr.id = 0x0126;
+                    //wr.id = 0x0123;
+                    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                            0x5, 0x6, 0x7, 0x8 };
+                    wr.len = 8;
+
+                    ACC.FastWrite(wr.data, wr.id);
+
+                    #endregion
+
+                }
+               if(key ==1)
+                {
+                    #region Test SetHBT()
+                    ACC.SetHBT(103, 3000);
+
+
+
+
+                    #endregion
+                }
+               if(key ==2)
+                {
+                    ushort MyHBT = 0;
+                    ACC.GetHBT(103, ref MyHBT);
+                    canmsg wr = new canmsg();
+                    wr.id = 0x0126;
+                    //wr.id = 0x0123;
+                    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                            0x5, 0x6, 0x7, 0x8 };
+
+                    var sdata = SplitBytes(MyHBT);
+
+                    wr.data[0] = sdata.LSB;
+                    wr.data[1] = sdata.MSB;
+                    wr.len = 2;
+
+                    ACC.FastWrite(wr.data, wr.id);
+
+                }
+
+                if (key == 3)
+                {
+                    byte node = 103;
+                    ushort ind = 0x6666;
+                    byte subind = 0x1;
+                    int dan = 0;
+
+                    
+                    
+                    ACC.Read(node, ind, subind, ref dan);
+                    Console.WriteLine("Данные до изменения "+ dan);
+                    ACC.Write(node, ind, subind, 13);
+
+
+                    ACC.Read(node, ind, subind, ref dan);
+                    Console.WriteLine("Данные после изменения " + dan);
+                }
+
+                if (key == 4)
+                {
+
+                    byte node = 103;
+                    ushort ind = 0x6666;
+                    byte subind = 0x1;
+                    int[] dan = new int[20];
+
+
+
+                    ACC.ReadArray(node, ind, out dan);
+                    PrintArr(dan);
+                    ACC.WriteArray(node, ind, new int[] {228, 222, 333, 444, 666, 1,8, 9 });
+
+
+                    ACC.ReadArray(node, ind, out dan);
+                    PrintArr(dan);
+
+                }
+
+
+                if ( key == 5)
+                {
+
+                    var state = ACC.GetDeviceState(103);
+                    Thread.Sleep(10);
+                    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
+
+                    ACC.SetDeviceState(103, 129);
+                    Thread.Sleep(10);
+                    state = ACC.GetDeviceState(103);
+                    Thread.Sleep(10);
+                    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
+                }
+
+
+            }
+        
+
+ 
+            #region MyRegion
 
             //canmsg rd = new canmsg();
 
@@ -200,7 +322,8 @@ namespace TEST
             //Console.WriteLine("Статус выполнения:" + ApiCanController.GetErrorInfo(errorCode));
 
             //Console.WriteLine("Данные: " + pdo);
-            //Console.WriteLine("UPD = " + Upd);
+            //Console.WriteLine("UPD = " + Upd); 
+            #endregion
 
 
 

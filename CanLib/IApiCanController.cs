@@ -110,7 +110,7 @@ namespace CAN_Test.ApiCanController
         /// </summary>
         /// <param name="Node">Номер узла</param>
         /// <returns>Текстовое описание состояния узла</returns>
-        string GetDeviceStateInfo(byte Node);
+        string GetDeviceStateInfo(byte StateNode);
 
 
         /// <summary>
