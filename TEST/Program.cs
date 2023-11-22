@@ -39,7 +39,7 @@ namespace TEST
         }
 
 
-        static void Main(string[] args)
+        static void  Main(string[] args)
         {
             ApiCanController ACC = new ApiCanController();
             Console.WriteLine("Расшифровка состояний:\n" +
@@ -196,7 +196,8 @@ namespace TEST
                 "2 - Cчитать HBT и вывести через CAN (write)\n" +
                 "3 - Тест записи/чтения в ОС\n" +
                 "4 - Тест записи/чтения массива в ОС\n" +
-                "5 - Тест чтения/изменения состояний узла");
+                "5 - Тест чтения/изменения состояний узла\n"+
+                "6 - Тест считывания данных из CANmon FastRead()");
 
             while (true)
             {
@@ -213,7 +214,7 @@ namespace TEST
                                             0x5, 0x6, 0x7, 0x8 };
                     wr.len = 8;
 
-                    ACC.FastWrite(wr.data, wr.id);
+                    ACC.FastWrite(wr);
 
                     #endregion
 
@@ -235,8 +236,7 @@ namespace TEST
                     canmsg wr = new canmsg();
                     wr.id = 0x0126;
                     //wr.id = 0x0123;
-                    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-                                            0x5, 0x6, 0x7, 0x8 };
+                    wr.data = new byte[8] ;
 
                     var sdata = SplitBytes(MyHBT);
 
@@ -244,7 +244,7 @@ namespace TEST
                     wr.data[1] = sdata.MSB;
                     wr.len = 2;
 
-                    ACC.FastWrite(wr.data, wr.id);
+                    ACC.FastWrite(wr);
 
                 }
 
@@ -299,6 +299,24 @@ namespace TEST
                     state = ACC.GetDeviceState(103);
                     Thread.Sleep(10);
                     Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
+                }
+                if(key == 6)
+                {
+                    canmsg rd = new canmsg();
+
+                    rd.data = new byte[8];
+                    while (true)
+                    {                      
+                        int Status=ACC.FastRead(ref rd);
+                        if(Status == 0 && rd.id!=0)
+                        {
+                            Console.WriteLine($"id = {rd.id}\ndata = {rd.data[0]}");
+                            rd.len = 8;
+                            break;
+                        }                 
+
+                    }
+                    Console.WriteLine("Чтение успешно");
                 }
 
 

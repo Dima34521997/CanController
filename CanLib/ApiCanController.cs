@@ -86,31 +86,11 @@ namespace CAN_Test.ApiCanController
         }
 
 
-        public int FastWrite(byte[] Data, uint ID)
-        {
-            int FRC = 0;
-            canmsg wr = new canmsg();
-            wr.id = ID;
-            wr.data = Data;
-            wr.len = 8;
-            FRC = CHAICanDLL.CanWrite(CanPort, wr);
-            Thread.Sleep(10);
-            return FRC;
-        }
+        public int FastWrite(canmsg wr) => CHAICanDLL.CanWrite(CanPort, wr);
+  
 
-        public int FastRead(byte[] Data)
-        {
-            int FRC = 0;
-            canmsg rd = new canmsg();
-            while (true)
-            {
-                FRC = CHAICanDLL.CanRead(CanPort, ref rd);
-                if (FRC == (int)CHAICodes.ECIOK) break;
-            }
-
-            for (int i = 0; i < rd.data.Length; i++) { Data[i] = rd.data[i]; }
-            return FRC;
-        }
+        public int FastRead(ref canmsg rd) =>CHAICanDLL.CanRead(CanPort, ref rd);
+   
 
         public int GetHBT(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
 

@@ -61,15 +61,15 @@ namespace CAN_Test.ApiCanController
         /// <param name="Data">Данные для отправки</param>
         /// <param name="ID">Идентификатор CAN-кадра</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastWrite(byte[] Data, uint ID);
+        int FastWrite(canmsg wr);
 
 
         /// <summary>
-        /// Считывает отправленный в сеть CAN-кадр.
+        /// Считывает отправленный в сеть CAN-кадр. Вызывать в while(true) 
         /// </summary>
         /// <param name="Data">Хранит в себе считанный CAN-кадр</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastRead(byte[] Data);
+        int FastRead(ref canmsg rd);
 
 
         /// <summary>
