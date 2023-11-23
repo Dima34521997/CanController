@@ -55,6 +55,18 @@ namespace CAN_Test.ApiCanController
         int ReadArray<T>(byte Node, ushort Index, out T[] DataArr);
 
 
+
+
+        /// <summary>
+        /// Возвращает длину массива в ОС.
+        /// </summary>
+        /// <param name="Node">Номер узла</param>
+        /// <param name="Index">Индекс</param>
+        /// <returns>Длина массива в объектном словаре устройства</returns>
+        ushort GetLengthOfArray(byte Node, ushort Index);
+
+
+
         /// <summary>
         /// Метод отправляет CAN-кадр в сеть.
         /// </summary>

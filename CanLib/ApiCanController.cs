@@ -78,7 +78,7 @@ namespace CAN_Test.ApiCanController
         }
 
 
-        ushort GetLengthOfArray(byte Node, ushort Index)
+        public ushort GetLengthOfArray(byte Node, ushort Index)
         {
             ushort Size = 0;
             Read(Node, Index, 0, ref Size);
