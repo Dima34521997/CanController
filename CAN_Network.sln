@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TEST", "TEST\TEST.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanLib", "CanLib\CanLib.csproj", "{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanLib", "CanLib\CanLib.csproj", "{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanTester", "CanTester\CanTester.csproj", "{3800765A-8ACF-428A-B0C2-CFAD2F7CA44A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3800765A-8ACF-428A-B0C2-CFAD2F7CA44A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3800765A-8ACF-428A-B0C2-CFAD2F7CA44A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3800765A-8ACF-428A-B0C2-CFAD2F7CA44A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3800765A-8ACF-428A-B0C2-CFAD2F7CA44A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
