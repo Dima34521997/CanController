@@ -62,7 +62,7 @@ namespace TEST
             //    }
             //}
 
-            ACC.ActivateCanOpen();
+            
 
             //byte Node = 103;
             //UInt16 Index = 0x6666;
@@ -190,119 +190,175 @@ namespace TEST
 
 
             #endregion
+
             Console.WriteLine(
+                "Для запуска CAN введи 111 / Для остановки CAN введи 222\n" +
                 "0 - Тест CAN(write);\n" +
                 "1 - Установить HBT в 3000 ()\n" +
                 "2 - Cчитать HBT и вывести через CAN (write)\n" +
                 "3 - Тест записи/чтения в ОС\n" +
                 "4 - Тест записи/чтения массива в ОС\n" +
-                "5 - Тест чтения/изменения состояний узла");
+                "5 - Тест чтения/изменения состояний узла\n" +
+                "6 - Вывести значение текущего HBT\n" +
+                "333 - Тест на устойчивость к спаму включения и выключения"
+                );
+
+
+
 
             while (true)
             {
-              int? key =  int.Parse(Console.ReadLine());
-               if(key ==0)
+            int? key =  int.Parse(Console.ReadLine());
+
+            if (key == 111)
                 {
-                    #region Test CAN
-
-
-                    canmsg wr = new canmsg();
-                    wr.id = 0x0126;
-                    //wr.id = 0x0123;
-                    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-                                            0x5, 0x6, 0x7, 0x8 };
-                    wr.len = 8;
-
-                    ACC.FastWrite(wr.data, wr.id);
-
-                    #endregion
-
-                }
-               if(key ==1)
-                {
-                    #region Test SetHBT()
-                    ACC.SetHBT(103, 3000);
-
-
-
-
-                    #endregion
-                }
-               if(key ==2)
-                {
-                    ushort MyHBT = 0;
-                    ACC.GetHBT(103, ref MyHBT);
-                    canmsg wr = new canmsg();
-                    wr.id = 0x0126;
-                    //wr.id = 0x0123;
-                    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-                                            0x5, 0x6, 0x7, 0x8 };
-
-                    var sdata = SplitBytes(MyHBT);
-
-                    wr.data[0] = sdata.LSB;
-                    wr.data[1] = sdata.MSB;
-                    wr.len = 2;
-
-                    ACC.FastWrite(wr.data, wr.id);
-
+                    Console.WriteLine(ACC.ActivateCanOpen() == 0 ? "Успешный запуск": "Какая-то ошибка"); 
                 }
 
-                if (key == 3)
+            if (key == 222)
                 {
-                    byte node = 103;
-                    ushort ind = 0x6666;
-                    byte subind = 0x1;
-                    int dan = 0;
-
-                    
-                    
-                    ACC.Read(node, ind, subind, ref dan);
-                    Console.WriteLine("Данные до изменения "+ dan);
-                    ACC.Write(node, ind, subind, 13);
-
-
-                    ACC.Read(node, ind, subind, ref dan);
-                    Console.WriteLine("Данные после изменения " + dan);
+                    Console.WriteLine(ACC.DisactivateCanOpen() == 0 ? "CAN дизактивирован" : "Какая-то ошибка");
                 }
 
-                if (key == 4)
-                {
-
-                    byte node = 103;
-                    ushort ind = 0x6666;
-                    byte subind = 0x1;
-                    int[] dan = new int[20];
+            if (key == 0)
+            {
+                #region Test CAN
 
 
+                canmsg wr = new canmsg();
+                wr.id = 0x0126;
+                //wr.id = 0x0123;
+                wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                        0x5, 0x6, 0x7, 0x8 };
+                wr.len = 8;
 
-                    ACC.ReadArray(node, ind, out dan);
-                    PrintArr(dan);
-                    ACC.WriteArray(node, ind, new int[] {228, 222, 333, 444, 666, 1,8, 9 });
+                ACC.FastWrite(wr.data, wr.id);
 
-
-                    ACC.ReadArray(node, ind, out dan);
-                    PrintArr(dan);
-
-                }
-
-
-                if ( key == 5)
-                {
-
-                    var state = ACC.GetDeviceState(103);
-                    Thread.Sleep(10);
-                    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
-
-                    ACC.SetDeviceState(103, 129);
-                    Thread.Sleep(10);
-                    state = ACC.GetDeviceState(103);
-                    Thread.Sleep(10);
-                    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
-                }
-
+                #endregion
 
             }
+            if(key == 1)
+            {
+                //ACC.ActivateCanOpen();
+                ACC.SetHBT(103, 3000);
+            }
+
+
+            if (key == 6)
+                {
+                    byte node = 103;
+                    ushort HBT = 111;
+                    ACC.GetHBT(node, ref HBT);
+                    Console.WriteLine($" HBT = {HBT}");
+                }
+
+
+            if(key == 2)
+            {
+                ushort MyHBT = 0;
+                ACC.GetHBT(103, ref MyHBT);
+                canmsg wr = new canmsg();
+                wr.id = 0x0126;
+                //wr.id = 0x0123;
+                wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                        0x5, 0x6, 0x7, 0x8 };
+
+                var sdata = SplitBytes(MyHBT);
+
+                wr.data[0] = sdata.LSB;
+                wr.data[1] = sdata.MSB;
+                wr.len = 2;
+
+                ACC.FastWrite(wr.data, wr.id);
+
+            }
+
+            if (key == 3)  
+            {
+
+                //ACC.ActivateCanOpen();
+                byte node = 103;
+                // Для теста вычитывания данных из несуществующего индекса
+                //ushort ind = 0x9228;
+
+                ushort ind = 0x6666;
+                byte subind = 0x1;
+                int dan = 0;
+
+                   
+                    
+                int FRC = ACC.Read(node, ind, subind, ref dan);
+                Console.WriteLine("Данные до изменения "+ dan);
+                ACC.Write(node, ind, subind, 13);
+
+
+                FRC = ACC.Read(node, ind, subind, ref dan);
+                Console.WriteLine("Данные после изменения " + dan);
+                Console.WriteLine(ACC.GetErrorInfo(FRC));
+
+                //ACC.DisactivateCanOpen();
+            }
+
+            if (key == 4)
+            {
+                //ACC.ActivateCanOpen();
+
+                byte node = 103;
+                // Для теста вычитывания данных из несуществующего индекса
+                //ushort ind = 0x9228;
+                ushort ind = 0x6666;
+                byte subind = 0x1;
+                int[] dan = new int[20];
+                int FRC = 11;
+                FRC = ACC.Read(node, ind, subind, ref dan);
+                Console.WriteLine(ACC.GetErrorInfo(FRC));
+                FRC = ACC.ReadArray(node, ind, out dan);
+                Console.WriteLine($"FRC после первого чтения = {FRC}");
+                Console.WriteLine("До записи:");
+                PrintArr(dan);
+                ACC.WriteArray(node, ind, new int[] {228, 222, 333, 444, 666, 1, 8, 9 });
+                Console.WriteLine($"FRC после первой записи = {FRC}");
+
+                FRC = ACC.ReadArray(node, ind, out dan);
+                Console.WriteLine($"FRC после 2 чтения= {FRC}");
+                Console.WriteLine("После записи:");
+                PrintArr(dan);
+                Console.WriteLine($"FRC = {FRC}");
+
+                }
+
+
+            if (key == 5)
+            {
+
+                var state = ACC.GetDeviceState(103);
+                Thread.Sleep(10);
+                Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
+
+                ACC.SetDeviceState(103, 129);
+                Thread.Sleep(10);
+                state = ACC.GetDeviceState(103);
+                Thread.Sleep(10);
+                Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
+            }
+
+            if (key == 333)
+                {
+                    while (true)
+                    {
+                        ACC.ActivateCanOpen();
+                        //Thread.Sleep(10);
+                        ACC.DisactivateCanOpen();
+                    }
+
+                    Console.WriteLine("Произошел сбой!!!");
+
+                }
+                
+
+            }
+
+            
         
 
  

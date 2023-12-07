@@ -19,10 +19,9 @@ namespace CAN_Test.ApiCanController
             {
                 FRC = CANOpenDll.
                     write_device_object_sdo(Node, Index, SubIndex, (byte*)&NewData, DataSize);
-
+           
             }
 
-            if (FRC != 0) throw new Exception("Ошибка записи");
             return FRC;
         }
 
@@ -51,8 +50,7 @@ namespace CAN_Test.ApiCanController
             {
                 FRC = CANOpenDll.read_device_object_sdo(Node, Index, SubIndex, (byte*)&NewData, ref DataSize);
             }
-            if (FRC != 0 && Data == null)
-                throw new Exception("Попытка прочесть пустой индекс");
+
             Data = NewData;
             return FRC;
         }
@@ -65,13 +63,20 @@ namespace CAN_Test.ApiCanController
             ushort ArraySize = GetLengthOfArray(Node, Index);
 
             T[] NewDataArr = new T[ArraySize];
-
-            for (byte index = 0; index < ArraySize; index++)
+            if (ArraySize > 0)
             {
-                FRC = Read(Node, Index, (byte)(0x01 + index), ref NewDataArr[index]);
+                for (byte subindex = 0; subindex < ArraySize; subindex++)
+                {
+                    FRC = Read(Node, Index, (byte)(0x01 + subindex), ref NewDataArr[subindex]);
+
+                }
             }
-            if (FRC != 0 && NewDataArr == null) // типа пустой индекс
-                throw new Exception($"Попытка прочесть пустой индекс. Код ошибки {FRC}");
+
+            else
+            {
+                FRC = Read(Node, Index, 0, ref NewDataArr[0]);
+            }
+          
 
             DataArr = NewDataArr;
             return FRC;
@@ -112,10 +117,10 @@ namespace CAN_Test.ApiCanController
             return FRC;
         }
 
-        public int GetHBT(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
+        public int GetHBT(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0, ref HBT);
 
 
-        public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x000, HBT);
+        public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x0, HBT);
 
 
         public int ActivateCanOpen()
@@ -240,6 +245,7 @@ namespace CAN_Test.ApiCanController
                 [-11] = " вызов был остановлен событием",
                 [-12] = " нет ресурсов",
                 [-13] = " произошло прерывание",
+                [-20] = " протокол передачи прерван сервером, проверьте индекс объекта",
                 [-102] = " объект не существует в ОС",
                 [-103] = " ошибка записи в объектный словарь",
             };
