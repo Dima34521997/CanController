@@ -22,16 +22,21 @@ namespace CanTester
     /// </summary>
     public partial class MainWindow : Window
     {
+        ApiCanController ACC = new ApiCanController();
         public MainWindow()
         {
             InitializeComponent();
         }
 
-        private int Start(object sender, RoutedEventArgs e)
-        {
-            int FRC = ;
 
-            return FRC;
+        private void StartCan(object sender, RoutedEventArgs e)
+        {
+            ACC.ActivateCanOpen();
+        }
+
+        private void StopCan(object sender, RoutedEventArgs e)
+        {
+            ACC.DisactivateCanOpen();
         }
     }
 }

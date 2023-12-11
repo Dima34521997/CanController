@@ -84,8 +84,8 @@
 
         <Label Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="3"/>
 
-        <Button Grid.Row="7" Grid.Column="4" Content="ПУСК" FontSize="18" FontWeight="ExtraBlack"/>
-        <Button Grid.Row="7" Grid.Column="5" Content="СТОП" FontSize="18" FontWeight="ExtraBlack"/>
+        <Button x:Name="btn_start" Grid.Row="7" Grid.Column="4" Content="ПУСК" FontSize="18" FontWeight="ExtraBlack" Click="StartCan"/>
+        <Button x:Name="btn_stop" Grid.Row="7" Grid.Column="5" Content="СТОП" FontSize="18" FontWeight="ExtraBlack" Click="StopCan"/>
 
     </Grid>
 </Window>
