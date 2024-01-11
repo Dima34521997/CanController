@@ -39,7 +39,7 @@ namespace TEST
         }
 
 
-        static void Main(string[] args)
+        static void  Main(string[] args)
         {
             ApiCanController ACC = new ApiCanController();
             Console.WriteLine("Расшифровка состояний:\n" +

@@ -55,21 +55,33 @@ namespace CAN_Test.ApiCanController
         int ReadArray<T>(byte Node, ushort Index, out T[] DataArr);
 
 
+
+
+        /// <summary>
+        /// Возвращает длину массива в ОС.
+        /// </summary>
+        /// <param name="Node">Номер узла</param>
+        /// <param name="Index">Индекс</param>
+        /// <returns>Длина массива в объектном словаре устройства</returns>
+        ushort GetLengthOfArray(byte Node, ushort Index);
+
+
+
         /// <summary>
         /// Метод отправляет CAN-кадр в сеть.
         /// </summary>
         /// <param name="Data">Данные для отправки</param>
         /// <param name="ID">Идентификатор CAN-кадра</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastWrite(byte[] Data, uint ID);
+        int FastWrite(canmsg wr);
 
 
         /// <summary>
-        /// Считывает отправленный в сеть CAN-кадр.
+        /// Считывает отправленный в сеть CAN-кадр. Вызывать в while(true) 
         /// </summary>
         /// <param name="Data">Хранит в себе считанный CAN-кадр</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastRead(byte[] Data);
+        int FastRead(ref canmsg rd);
 
 
         /// <summary>
