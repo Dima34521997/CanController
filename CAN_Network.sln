@@ -3,13 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Scenario_Editor", "Scenario_Editor\Scenario_Editor.csproj", "{8C196118-269B-4A8F-AF77-4FA722E802F7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TEST", "TEST\TEST.csproj", "{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject1", "TestProject1\TestProject1.csproj", "{B88CE388-4D3B-4520-8FA4-04770D0D0B0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CanLib", "CanLib\CanLib.csproj", "{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CanLib", "CanLib\CanLib.csproj", "{BC60C1BE-903C-4FE4-9D4B-F823B6C9BAB8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +15,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8C196118-269B-4A8F-AF77-4FA722E802F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8C196118-269B-4A8F-AF77-4FA722E802F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8C196118-269B-4A8F-AF77-4FA722E802F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8C196118-269B-4A8F-AF77-4FA722E802F7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C4E4046-03ED-4F0A-89ED-C15FC9BCCEA9}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -55,33 +55,21 @@ namespace CAN_Test.ApiCanController
         int ReadArray<T>(byte Node, ushort Index, out T[] DataArr);
 
 
-
-
-        /// <summary>
-        /// Возвращает длину массива в ОС.
-        /// </summary>
-        /// <param name="Node">Номер узла</param>
-        /// <param name="Index">Индекс</param>
-        /// <returns>Длина массива в объектном словаре устройства</returns>
-        ushort GetLengthOfArray(byte Node, ushort Index);
-
-
-
         /// <summary>
         /// Метод отправляет CAN-кадр в сеть.
         /// </summary>
         /// <param name="Data">Данные для отправки</param>
         /// <param name="ID">Идентификатор CAN-кадра</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastWrite(canmsg wr);
+        int FastWrite(byte[] Data, uint ID);
 
 
         /// <summary>
-        /// Считывает отправленный в сеть CAN-кадр. Вызывать в while(true) 
+        /// Считывает отправленный в сеть CAN-кадр.
         /// </summary>
         /// <param name="Data">Хранит в себе считанный CAN-кадр</param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int FastRead(ref canmsg rd);
+        int FastRead(byte[] Data);
 
 
         /// <summary>
@@ -91,7 +79,7 @@ namespace CAN_Test.ApiCanController
         /// <param name="Node">Номер узла</param>
         /// <param name="HBT"></param>
         /// <returns>Код-резутат выполнения метода</returns>
-        int GetHBT(byte Node, ref ushort HBT);
+        int GetHBT<T>(byte Node, ref ushort HBT);
 
 
         /// <summary>
@@ -122,7 +110,7 @@ namespace CAN_Test.ApiCanController
         /// </summary>
         /// <param name="Node">Номер узла</param>
         /// <returns>Текстовое описание состояния узла</returns>
-        string GetDeviceStateInfo(byte StateNode);
+        string GetDeviceStateInfo(byte Node);
 
 
         /// <summary>
