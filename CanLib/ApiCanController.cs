@@ -112,7 +112,7 @@ public class ApiCanController : IApiCanController
         return FRC;
     }
 
-    public int GetHBT<T>(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
+    public int GetHBT(byte Node, ref ushort HBT) => Read(Node, 0x1017, 0x0000, ref HBT);
 
 
     public int SetHBT(byte Node, ushort HBT) => Write(Node, 0x1017, 0x000, HBT);

@@ -15,7 +15,6 @@ namespace TEST
         {
             byte LSB = (byte)value;
             byte MSB = (byte)(value >> 8);
-
             var result = (LSB: LSB, MSB: MSB);
             return result;
         }
@@ -38,364 +37,187 @@ namespace TEST
         }
 
 
+
+
         static void  Main(string[] args)
         {
             ApiCanController ACC = new ApiCanController();
+
+
             Console.WriteLine("Расшифровка состояний:\n" +
                 "  0 - успешное выполнение\n< 0 - код ошибки");
+
             Console.WriteLine("--------------------------------");
 
-            int errorCode = 0;
+            Console.WriteLine(
+                "Для запуска CAN введи 1 / Для остановки CAN введи 0\n" +
+                "2 - Тест установки HBT и вычитки текущего значения ()\n" +
+                "3 - Cчитать HBT и вывести через CAN (write)\n" +
+                "4 - Тест записи/чтения в ОС\n" +
+                "5 - Тест записи/чтения массива в ОС\n" +
+                "6 - Тест чтения/изменения состояний узла\n" +
+                "7 - Вывести значение текущего HBT\n" +
+                "8 - Тест на устойчивость к спаму включения и выключения\n" +
+                "9 - Тест методов PDO"
+                );
 
 
 
+            while (true)
+            {
+                int? Test = int.Parse(Console.ReadLine());
 
+                switch (Test)
+                { 
+                    //Тест запуска CanOpen
+                    case 1: 
+                        Console.WriteLine(ACC.ActivateCanOpen() == 0 ?
+                            "Успешный запуск" : "Какая-то ошибка, проверь подключение контроллера");
+                        break;
 
-            //void ActivateCanOpenChannel(byte chanNumber, int cond = 0)
-            //{
-            //    if (cond == 1)
-            //    {
-            //        errorCode = CANOpenDll.StartCANMaster(chanNumber, 4);
-            //        Thread.Sleep(10);
-            //        Console.WriteLine($"Состояние запуска канала {chanNumber} (CanOpen): {errorCode}");
-            //    }
-            //}
 
-            
+                    //Тест остановки CanOpen
+                    case 0:
+                        Console.WriteLine(ACC.DisactivateCanOpen() == 0 ?
+                            "CAN дизактивирован" : "Какая-то ошибка");
+                        break;
 
-            //byte Node = 103;
-            //UInt16 Index = 0x6666;
-            //byte SubIndex = 0;
 
-            int[] TestArr = new int[] { 99, 98, 97, 96, 95, 94, 93, 92 };
-            int[] ReadedTestArr = new int[8];
-            int data = 0;
+                    //Тест установки HBT и вычитки текущего значения
+                    case 2:
+                        ushort HBT2 = 228;
 
+                        ACC.SetHBT(103, 3000);
 
+                        Console.WriteLine(ACC.GetHBT(103, ref HBT2));
+                        break;
 
 
+                    //Тест считывания HBT и вывода через CAN (write)
+                    case 3:
+                        ushort MyHBT = 0;
+                        ACC.GetHBT(103, ref MyHBT);
 
-            #region Тест функций CAN Open
+                        canmsg wr = new canmsg();
+                        wr.id = 0x0126;
+                        //wr.id = 0x0123;
+                        wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
+                                                0x5, 0x6, 0x7, 0x8 };
 
-            #region Тест чтения массива из OD
-            //int FRC = ApiCanController.ReadArray(Node, Index, out TestArr);
-            //Console.WriteLine(ApiCanController.GetErrorInfo(FRC));
-            //PrintArr(TestArr, Index);
-            #endregion
+                        var sdata = SplitBytes(MyHBT);
 
-            #region Тест чтения элемента из OD
-            //int FRC = ApiCanController.Read(Node, Index, SubIndex, ref data);
-            //Console.WriteLine(data);
-            #endregion
+                        wr.data[0] = sdata.LSB;
+                        wr.data[1] = sdata.MSB;
+                        wr.len = 2;
 
-            #region Тест записи массива в OD
+                        ACC.FastWrite(wr.data, wr.id);
 
-            //Console.WriteLine($"Запись ErrorCode: {ApiCanController.WriteArray(Node, Index, TestArr)}");
+                        break;
 
-            //errorCode = ApiCanController.ReadArray(Node, Index, out ReadedTestArr);
-            //Console.WriteLine($"Чтение ErrorCode: {errorCode}");
-            //PrintArr(ReadedTestArr, 0x6666);
-            #endregion
 
-            #region Тест записи элемента в OD
+                    //Тест записи/чтения в ОС
+                    case 4:
+                        byte subind = 0x1;
+                        int[] data4 = new int[20];
+                        int FRC = 11;
 
-            // ApiCanController.Write(Node, 0x1017, SubIndex, (ushort)228);
+                        FRC = ACC.Read(103, 0x6666, 0x1, ref data4);
+                        Console.WriteLine(ACC.GetErrorInfo(FRC));
+                        FRC = ACC.ReadArray(103, 0x6666, out data4);
+                        Console.WriteLine($"FRC после первого чтения = {FRC}");
+                        Console.WriteLine("До записи:");
+                        PrintArr(data4);
+                        ACC.WriteArray(103, 0x6666, new int[] { 228, 222, 333, 444, 666, 1, 8, 9 });
+                        Console.WriteLine($"FRC после первой записи = {FRC}");
 
+                        FRC = ACC.ReadArray(103, 0x6666, out data4);
+                        Console.WriteLine($"FRC после 2 чтения= {FRC}");
+                        Console.WriteLine("После записи:");
+                        PrintArr(data4);
+                        Console.WriteLine($"FRC = {FRC}");
 
-            #endregion
+                        break;
 
-            #endregion
 
-            #region Тест CANOpen + CAN
+                    //Тест записи/чтения массива в ОС
+                    case 5:
+                        int[] data5 = new int[20];
 
-            //Console.WriteLine("--------------------------------");
-            //canmsg wr = new canmsg();
-            //wr.id = 0x0126;
-            ////wr.id = 0x0123;
-            //wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-            //                        0x5, 0x6, 0x7, 0x8 };
-            //wr.len = 8;
-            //errorCode = CHAICanDLL.CanWrite(0, wr);
-            //Console.WriteLine("Отправка кадра: " + errorCode);
+                        FRC = ACC.Read(103, 0x6666, 0x1, ref data5);
+                        Console.WriteLine(ACC.GetErrorInfo(FRC));
+                        FRC = ACC.ReadArray(103, 0x6666, out data5);
+                        Console.WriteLine($"FRC после первого чтения = {FRC}");
+                        Console.WriteLine("До записи:");
+                        PrintArr(data5);
+                        ACC.WriteArray(103, 0x6666, new int[] { 228, 222, 333, 444, 666, 1, 8, 9 });
+                        Console.WriteLine($"FRC после первой записи = {FRC}");
 
-            //Console.WriteLine("--------------------------------");
+                        FRC = ACC.ReadArray(103, 0x6666, out data5);
+                        Console.WriteLine($"FRC после 2 чтения= {FRC}");
+                        Console.WriteLine("После записи:");
+                        PrintArr(data5);
+                        Console.WriteLine($"FRC = {FRC}");
 
-            //Thread.Sleep(100);
+                        break;
 
-            //canmsg rd = new canmsg();
-            //while (true)
-            //{
-            //    errorCode = CHAICanDLL.CanRead(1, ref rd);
-            //    if (errorCode == (int)CHAICodes.ECIOK) break;
-            //}
-            //Console.WriteLine("Считанные данные:");
-            //foreach (byte elem in rd.data) Console.Write($"{elem} ");
 
-            #endregion
+                    //Тест чтения/изменения состояний узла
+                    case 6:
+                        var state = ACC.GetDeviceState(103);
 
-            #region MyRegion
-            // Первый параметр - номер канала, второй - "кнопка" активации
-            // По умолчанию второй параметр имеет значение 0 (канал выкл.), 1 - активировать канал
-            //ActivateCanChannel(0);
-            //ActivateCanChannel(1, 1);
+                        Thread.Sleep(10);
 
+                        Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
 
-            //byte[] TestArrayW = new byte[8] { 3, 4, 5, 2, 3, 4, 5, 2 };
-            //byte[] TestArrayR = new byte[8];
-            //errorCode = ApiCanController.FastWrite(TestArrayW, 0x0123, errorCode);
-            //Console.WriteLine($"Состояние выполнения передачи: {errorCode}");
+                        ACC.SetDeviceState(103, 129);
+                        Thread.Sleep(10);
 
-            //errorCode = ApiCanController.FastRead(TestArrayR, errorCode);
-            //foreach (byte elem in TestArrayR) { Console.Write($"{elem} "); }
+                        state = ACC.GetDeviceState(103);
+                        Thread.Sleep(10);
+                        Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
 
+                        break;
 
-            // Тест HBT
-            //ushort HBT = 1111;
-            //ushort test = 0;
 
-            //errorCode = ApiCanController.SetHBT(Node, 5000);
-            //Console.WriteLine($"FRC = {errorCode}");
+                    //Тест вывода значения текущего HBT без его изменения
+                    case 7:
+                        ushort HBT = 111;
+                        ACC.GetHBT(103, ref HBT);
+                        Console.WriteLine($" HBT = {HBT}");
+                        break;
 
-            //errorCode = ApiCanController.GetHBT(Node, ref test);
-            //Console.WriteLine($"HBT = {test} | FRC = {errorCode}");
 
+                    //Тест на устойчивость к спаму включения и выключения
+                    case 8:
+                        int errcode = 0;
 
-            // Тест States'ов
+                        while (errcode == 0)
+                        {
+                            ACC.ActivateCanOpen();
+                            Thread.Sleep(10);
+                            ACC.DisactivateCanOpen();
+                        }
 
-            //Console.WriteLine($"Установка состояния: " +
-            //    $"{ApiCanController.GetErrorInfo(ApiCanController.SetDeviceState(Node, 127))}");
-            ////Thread.Sleep(10);
-            //Console.WriteLine($"State {ApiCanController.GetDeviceState(Node)}");
+                        Console.WriteLine("Произошел сбой!!!");
+                        break;
 
-            // Тест ReadDeviceInfo
-            //Console.WriteLine("Активация CANopen:" + ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
 
-            //uint Data = 0;
-            //errorCode = ApiCanController.ReadDeviceInfo(Node, ref Data);
-            //errorCode = ApiCanController.Read(Node, 0x1018, 0x01, ref Data);
-            //Console.WriteLine(Data);
+                    //Тест методов PDO
+                    case 9:
+                        int PDO = 14;
+                        byte UPD = 0;
 
-            // ТЕст FastRead
+                        ACC.CreatePDO(103, 0x9228, 0x01);
+                        ACC.BoundPDO(103, 0x9228, 0x01, 4);
+                        Thread.Sleep(500);
+                        ACC.ReadPDO(103, 0x9228, 0x01, ref UPD, ref PDO);
 
-            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.ActivateCan())); 
+                        Console.WriteLine($" Значение PDO = {PDO}");
+                        Console.WriteLine($" Значение флага обновления = {UPD}");
 
-            //int data = 3452;
-            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.ActivateCanOpen()));
-            //ApiCanController.Write(Node, Index, 0x01, data);
-            //Console.WriteLine(ApiCanController.GetErrorInfo(ApiCanController.Write(Node, Index, 0x01, data)));
-
-            //Console.WriteLine(errorCode);
-
-
-
-            #endregion
-
-            //Console.WriteLine(
-            //    "Для запуска CAN введи 111 / Для остановки CAN введи 222\n" +
-            //    "0 - Тест CAN(write);\n" +
-            //    "1 - Установить HBT в 3000 ()\n" +
-            //    "2 - Cчитать HBT и вывести через CAN (write)\n" +
-            //    "3 - Тест записи/чтения в ОС\n" +
-            //    "4 - Тест записи/чтения массива в ОС\n" +
-            //    "5 - Тест чтения/изменения состояний узла\n" +
-            //    "6 - Вывести значение текущего HBT\n" +
-            //    "333 - Тест на устойчивость к спаму включения и выключения"
-            //    );
-
-            byte Node = 103;
-            ushort Index = 0x9228;
-            byte Subindex = 0x00;
-            int PDO = 14;
-            byte UPD = 0;
-
-            Console.WriteLine(ACC.VirtualIndexBuilder(Index, Subindex)); ; 
-
-            //ACC.ActivateCanOpen();
-
-            //ACC.CreatePDO(Node, Index, Subindex);
-            //ACC.BoundPDO(Node, Index, Subindex, 4);
-            //Thread.Sleep(500);
-            //ACC.ReadPDO(Node, Index, Subindex, ref UPD, ref PDO);
-
-            //Console.WriteLine($" Значение PDO = {PDO}");
-
-            //while (true)
-            //{
-            //int? key =  int.Parse(Console.ReadLine());
-
-            //if (key == 111)
-            //    {
-            //        Console.WriteLine(ACC.ActivateCanOpen() == 0 ? "Успешный запуск": "Какая-то ошибка"); 
-            //    }
-
-            //if (key == 222)
-            //    {
-            //        Console.WriteLine(ACC.DisactivateCanOpen() == 0 ? "CAN дизактивирован" : "Какая-то ошибка");
-            //    }
-
-            //if (key == 0)
-            //{
-            //    #region Test CAN
-
-
-            //    canmsg wr = new canmsg();
-            //    wr.id = 0x0126;
-            //    //wr.id = 0x0123;
-            //    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-            //                            0x5, 0x6, 0x7, 0x8 };
-            //    wr.len = 8;
-
-            //    ACC.FastWrite(wr.data, wr.id);
-
-            //    #endregion
-
-            //}
-            //if(key == 1)
-            //{
-            //    //ACC.ActivateCanOpen();
-            //    ACC.SetHBT(103, 3000);
-            //}
-
-
-            //if (key == 6)
-            //    {
-            //        byte node = 103;
-            //        ushort HBT = 111;
-            //        ACC.GetHBT(node, ref HBT);
-            //        Console.WriteLine($" HBT = {HBT}");
-            //    }
-
-
-            //if(key == 2)
-            //{
-            //    ushort MyHBT = 0;
-            //    ACC.GetHBT(103, ref MyHBT);
-            //    canmsg wr = new canmsg();
-            //    wr.id = 0x0126;
-            //    //wr.id = 0x0123;
-            //    wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-            //                            0x5, 0x6, 0x7, 0x8 };
-
-            //    var sdata = SplitBytes(MyHBT);
-
-            //    wr.data[0] = sdata.LSB;
-            //    wr.data[1] = sdata.MSB;
-            //    wr.len = 2;
-
-            //    ACC.FastWrite(wr.data, wr.id);
-
-            //}
-
-            //if (key == 3)  
-            //{
-
-            //    //ACC.ActivateCanOpen();
-            //    byte node = 103;
-            //    // Для теста вычитывания данных из несуществующего индекса
-            //    //ushort ind = 0x9228;
-
-            //    ushort ind = 0x6666;
-            //    byte subind = 0x1;
-            //    int dan = 0;
-
-                   
-                    
-            //    int FRC = ACC.Read(node, ind, subind, ref dan);
-            //    Console.WriteLine("Данные до изменения "+ dan);
-            //    ACC.Write(node, ind, subind, 13);
-
-
-            //    FRC = ACC.Read(node, ind, subind, ref dan);
-            //    Console.WriteLine("Данные после изменения " + dan);
-            //    Console.WriteLine(ACC.GetErrorInfo(FRC));
-
-            //    //ACC.DisactivateCanOpen();
-            //}
-
-            //if (key == 4)
-            //{
-            //    //ACC.ActivateCanOpen();
-
-            //    byte node = 103;
-            //    // Для теста вычитывания данных из несуществующего индекса
-            //    //ushort ind = 0x9228;
-            //    ushort ind = 0x6666;
-            //    byte subind = 0x1;
-            //    int[] dan = new int[20];
-            //    int FRC = 11;
-            //    FRC = ACC.Read(node, ind, subind, ref dan);
-            //    Console.WriteLine(ACC.GetErrorInfo(FRC));
-            //    FRC = ACC.ReadArray(node, ind, out dan);
-            //    Console.WriteLine($"FRC после первого чтения = {FRC}");
-            //    Console.WriteLine("До записи:");
-            //    PrintArr(dan);
-            //    ACC.WriteArray(node, ind, new int[] {228, 222, 333, 444, 666, 1, 8, 9 });
-            //    Console.WriteLine($"FRC после первой записи = {FRC}");
-
-            //    FRC = ACC.ReadArray(node, ind, out dan);
-            //    Console.WriteLine($"FRC после 2 чтения= {FRC}");
-            //    Console.WriteLine("После записи:");
-            //    PrintArr(dan);
-            //    Console.WriteLine($"FRC = {FRC}");
-
-            //    }
-
-
-            //if (key == 5)
-            //{
-
-            //    var state = ACC.GetDeviceState(103);
-            //    Thread.Sleep(10);
-            //    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
-
-            //    ACC.SetDeviceState(103, 129);
-            //    Thread.Sleep(10);
-            //    state = ACC.GetDeviceState(103);
-            //    Thread.Sleep(10);
-            //    Console.WriteLine(ACC.GetDeviceStateInfo((byte)state));
-            //}
-
-            //if (key == 333)
-            //    {
-            //        while (true)
-            //        {
-            //            ACC.ActivateCanOpen();
-            //            //Thread.Sleep(10);
-            //            ACC.DisactivateCanOpen();
-            //        }
-
-            //        Console.WriteLine("Произошел сбой!!!");
-
-            //    }
-                
-
-            //}
-
-            
-        
-
- 
-            #region MyRegion
-
-            //canmsg rd = new canmsg();
-
-            //rd.id = 0x0123;
-            //wr.data = new byte[8] { 0x1, 0x2, 0x3, 0x4,
-            //                        0x5, 0x6, 0x7, 0x8 };
-            //wr.len = 8;
-
-            //int pdo = 13;
-            //byte Upd = 0;
-
-            //errorCode = ApiCanController.ReadPDO(Node, Index, SubIndex, ref Upd, ref pdo);
-            //Console.WriteLine("Статус выполнения:" + ApiCanController.GetErrorInfo(errorCode));
-
-            //Console.WriteLine("Данные: " + pdo);
-            //Console.WriteLine("UPD = " + Upd); 
-            #endregion
-
-
-
+                        break;
+                }   
+            }
         }
     }
 }
