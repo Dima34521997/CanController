@@ -192,41 +192,42 @@ public class ApiCanController : IApiCanController
 
         return FRC;
     }
+        
 
-    //TODO:Сделать что то
-    public int ReadPDO(byte Node, ushort Index, byte SubIndex, ref byte Upd, ref int Data) 
-        => CANOpenDll.ReadNodeObjectToDictionary(Node, Index, SubIndex, ref Upd, ref Data);
+    public void CreatePDO(byte Node, ushort Index, byte Subindex)
+        => CANOpenDll.AddNodeObjectToDictionary(Node, Index, Subindex, (ushort)Defines.CAN_DEFTYPE_INTEGER32);
 
 
     public uint VirtualIndexBuilder(ushort Index, byte Subindex)
-    {
-        string sIndex = Index.ToString("X");
-        string sSubindex = Subindex.ToString("X2");
-        var VirtualIndex = Convert.ToUInt32($"{sIndex}{sSubindex}20", 16);
-        return VirtualIndex;
-    }
-        
-
-
-    public void CreatePDO(byte Node, ushort Index, byte Subindex) 
-        => CANOpenDll.AddNodeObjectToDictionary(Node, Index, Subindex, (ushort)Defines.CAN_DEFTYPE_INTEGER32);
+        => Convert.ToUInt32($"{Index.ToString("X")}{Subindex.ToString("X2")}20", 16);
 
 
     public void BoundPDO(byte Node, ushort Index, byte Subindex, byte PDONumber=1)
     {
-        ushort objDictInd = (ushort)(Defines.CAN_INDEX_RCVPDO_MAP_MIN  + (PDONumber - 1) + (Node - 1) * (int)Defines.CAN_NOF_PDO_TRAN_SLAVE); //вычисляет COBID (откуда читать PDO) (FUNCode+NODEID)
-        //TODO: Выяснить у разработчика зачем требуется переключение состояний контроллера
-        CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_ENTER_PRE_OPERATIONAL, Node);
-        Thread.Sleep(50);
-        CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_RESET_NODE, Node);
-        CANOpenDll.SetAllPDOsState((byte)Defines.NOT_VALID);
-        CANOpenDll.WritePDOMapping(objDictInd, 0, 0);   // Устанавливаем значение 0 для нулевого субиндекса      
-        CANOpenDll.WritePDOMapping(objDictInd, 1, VirtualIndexBuilder(Index, Subindex)); //1 параметр откуда принимать, 2 - суб индекс откуда брать , 3 - это куда мы записываем (т.е в свой виртуальный словарь ) (Index+SubIndex+размер(в битах))
-        CANOpenDll.WritePDOMapping(objDictInd, 0, 1);
-        CANOpenDll.SetAllPDOsState((byte)Defines.VALID);
-        CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_START_REMOTE_NODE, Node);
+        if (PDONumber < 0 || PDONumber > 4)
+        {
+            throw new Exception("Неверный номер PDO. Допустимы значения от 1 до 4 включительно");
+        }
+        else
+        {
+            ushort objDictInd = (ushort)(Defines.CAN_INDEX_RCVPDO_MAP_MIN + (PDONumber - 1) + (Node - 1) * (int)Defines.CAN_NOF_PDO_TRAN_SLAVE); //вычисляет COBID (откуда читать PDO) (FUNCode+NODEID)
+                                                                                                                                                 //TODO: Выяснить у разработчика зачем требуется переключение состояний контроллера
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_ENTER_PRE_OPERATIONAL, Node);
+            Thread.Sleep(50);
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_RESET_NODE, Node);
+            CANOpenDll.SetAllPDOsState((byte)Defines.NOT_VALID);
+            CANOpenDll.WritePDOMapping(objDictInd, 0, 0);   // Устанавливаем значение 0 для нулевого субиндекса      
+            CANOpenDll.WritePDOMapping(objDictInd, 1, VirtualIndexBuilder(Index, Subindex)); //1 параметр откуда принимать, 2 - суб индекс откуда брать , 3 - это куда мы записываем (т.е в свой виртуальный словарь ) (Index+SubIndex+размер(в битах))
+            CANOpenDll.WritePDOMapping(objDictInd, 0, 1);
+            CANOpenDll.SetAllPDOsState((byte)Defines.VALID);
+            CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_START_REMOTE_NODE, Node);
+
+        }
     }
 
+
+    public int ReadPDO(byte Node, ushort Index, byte SubIndex, ref byte UPD, ref int PDOData)
+        => CANOpenDll.ReadNodeObjectToDictionary(Node, Index, SubIndex, ref UPD, ref PDOData);
 
 
 

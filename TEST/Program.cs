@@ -13,15 +13,14 @@ namespace TEST
     {
         static public (byte LSB, byte MSB) SplitBytes(UInt16 value)
         {
-
-            
-
             byte LSB = (byte)value;
             byte MSB = (byte)(value >> 8);
 
             var result = (LSB: LSB, MSB: MSB);
             return result;
         }
+
+
         public static void PrintArr<T>(T[] arr, UInt16 Index=0)
         {
             if (Index != 0)
@@ -191,17 +190,17 @@ namespace TEST
 
             #endregion
 
-            Console.WriteLine(
-                "Для запуска CAN введи 111 / Для остановки CAN введи 222\n" +
-                "0 - Тест CAN(write);\n" +
-                "1 - Установить HBT в 3000 ()\n" +
-                "2 - Cчитать HBT и вывести через CAN (write)\n" +
-                "3 - Тест записи/чтения в ОС\n" +
-                "4 - Тест записи/чтения массива в ОС\n" +
-                "5 - Тест чтения/изменения состояний узла\n" +
-                "6 - Вывести значение текущего HBT\n" +
-                "333 - Тест на устойчивость к спаму включения и выключения"
-                );
+            //Console.WriteLine(
+            //    "Для запуска CAN введи 111 / Для остановки CAN введи 222\n" +
+            //    "0 - Тест CAN(write);\n" +
+            //    "1 - Установить HBT в 3000 ()\n" +
+            //    "2 - Cчитать HBT и вывести через CAN (write)\n" +
+            //    "3 - Тест записи/чтения в ОС\n" +
+            //    "4 - Тест записи/чтения массива в ОС\n" +
+            //    "5 - Тест чтения/изменения состояний узла\n" +
+            //    "6 - Вывести значение текущего HBT\n" +
+            //    "333 - Тест на устойчивость к спаму включения и выключения"
+            //    );
 
             byte Node = 103;
             ushort Index = 0x9228;
@@ -209,15 +208,16 @@ namespace TEST
             int PDO = 14;
             byte UPD = 0;
 
+            Console.WriteLine(ACC.VirtualIndexBuilder(Index, Subindex)); ; 
 
-            ACC.ActivateCanOpen();
+            //ACC.ActivateCanOpen();
 
-            ACC.CreatePDO(Node, Index, Subindex);
-            ACC.BoundPDO(Node, Index, Subindex, 4);
-            Thread.Sleep(500);
-            ACC.ReadPDO(Node, Index, Subindex, ref UPD, ref PDO);
+            //ACC.CreatePDO(Node, Index, Subindex);
+            //ACC.BoundPDO(Node, Index, Subindex, 4);
+            //Thread.Sleep(500);
+            //ACC.ReadPDO(Node, Index, Subindex, ref UPD, ref PDO);
 
-            Console.WriteLine($" Значение PDO = {PDO}");
+            //Console.WriteLine($" Значение PDO = {PDO}");
 
             //while (true)
             //{
