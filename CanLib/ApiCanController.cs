@@ -199,10 +199,10 @@ public class ApiCanController : IApiCanController
 
 
     public uint VirtualIndexBuilder(ushort Index, byte Subindex)
-        => Convert.ToUInt32($"{Index.ToString("X")}{Subindex.ToString("X2")}20", 16);
+        => Convert.ToUInt32($"{Index.ToString("X4")}{Subindex.ToString("X2")}20", 16);
 
 
-    public void BoundPDO(byte Node, ushort Index, byte Subindex, byte PDONumber=1)
+    public void BoundPDO(byte Node, ushort Index, byte Subindex, byte PDONumber)
     {
         if (PDONumber < 0 || PDONumber > 4)
         {
@@ -216,11 +216,14 @@ public class ApiCanController : IApiCanController
             Thread.Sleep(50);
             CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_RESET_NODE, Node);
             CANOpenDll.SetAllPDOsState((byte)Defines.NOT_VALID);
-            CANOpenDll.WritePDOMapping(objDictInd, 0, 0);   // Устанавливаем значение 0 для нулевого субиндекса      
+            CANOpenDll.WritePDOMapping(objDictInd, 0x00, 0);   // Устанавливаем значение 0 для нулевого субиндекса      
             CANOpenDll.WritePDOMapping(objDictInd, 1, VirtualIndexBuilder(Index, Subindex)); //1 параметр откуда принимать, 2 - суб индекс откуда брать , 3 - это куда мы записываем (т.е в свой виртуальный словарь ) (Index+SubIndex+размер(в битах))
-            CANOpenDll.WritePDOMapping(objDictInd, 0, 1);
+            //CANOpenDll.WritePDOMapping(objDictInd, 1, 0x60010120);
+            CANOpenDll.WritePDOMapping(objDictInd, 0x00, 1);
             CANOpenDll.SetAllPDOsState((byte)Defines.VALID);
             CANOpenDll.NMTMasterCommand((byte)Defines.CAN_NMT_START_REMOTE_NODE, Node);
+            Thread.Sleep(199);
+
 
         }
     }
